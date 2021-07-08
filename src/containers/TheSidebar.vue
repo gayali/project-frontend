@@ -36,7 +36,6 @@
 
     beforeCreate() {
       this.$store.dispatch('projects/fetch').then(() => {
-        console.log(this.projects)
         let sidebarDataList = []
 
         let item = {
@@ -110,7 +109,6 @@
 
         this.$store.dispatch('sidebar/setSidebarData', sidebarDataList)
 
-        console.log(this.sidebarData);
       })
 
 

@@ -10,8 +10,6 @@ const TheContainer = () => import('@/containers/TheContainer')
 const Dashboard = () => import('@/views/Dashboard')
 
 // Views - Pages
-const Page404 = () => import('@/views/pages/Page404')
-const Page500 = () => import('@/views/pages/Page500')
 const Login = () => import('@/views/pages/Login')
 
 // Users
@@ -75,22 +73,22 @@ function getProjects(){
   return [
     {
       path: 'new',
-      name: 'newProject',
+      name: 'New Project',
       component: NewProject
     },
     {
       path: 'kanban/:id',
-      name: 'kanban',
+      name: 'Kanban',
       component: Kanban
     },
     {
       path: 'backlog/:id',
-      name: 'backlog',
+      name: 'Backlog',
       component: Backlog
     },
     {
       path: 'details/:id',
-      name: 'details',
+      name: 'Project Details',
       component: Details
     }
   ]
