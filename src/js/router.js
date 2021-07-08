@@ -13,13 +13,16 @@ const Dashboard = () => import('@/views/Dashboard')
 const Page404 = () => import('@/views/pages/Page404')
 const Page500 = () => import('@/views/pages/Page500')
 const Login = () => import('@/views/pages/Login')
-const Register = () => import('@/views/pages/Register')
 
 // Users
 const Users = () => import('@/views/users/Users')
 const User = () => import('@/views/users/User')
 
-
+//Projects
+const NewProject = () => import('@/views/projects/NewProject')
+const Backlog = () => import('@/views/projects/Backlog')
+const Details = () => import('@/views/projects/Details')
+const Kanban = () => import('@/views/projects/Kanban')
 
 const router=new Router({
   mode: 'history', // https://router.vuejs.org/api/#mode
@@ -41,14 +44,13 @@ function configRoutes () {
         },
         {
           path: 'projects',
-          redirect: '/projects/1',
+          redirect: '/projects/new',
           name: 'Project',
           component: {
             render (c) { return c('router-view') }
           },
           children: getProjects()
         },
-      
       ]
     },
     {
@@ -63,7 +65,6 @@ function configRoutes () {
           name: 'login',
           component: Login
         },
-      
       ]
     },
    
@@ -73,19 +74,24 @@ function configRoutes () {
 function getProjects(){
   return [
     {
-      path: '404',
-      name: 'Page404',
-      component: Page404
+      path: 'new',
+      name: 'newProject',
+      component: NewProject
     },
     {
-      path: '500',
-      name: 'Page500',
-      component: Page500
+      path: 'kanban/:id',
+      name: 'kanban',
+      component: Kanban
     },
     {
-      path: 'register',
-      name: 'Register',
-      component: Register
+      path: 'backlog/:id',
+      name: 'backlog',
+      component: Backlog
+    },
+    {
+      path: 'details/:id',
+      name: 'details',
+      component: Details
     }
   ]
 }

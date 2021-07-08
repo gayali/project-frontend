@@ -80,7 +80,7 @@
           item = {
             _name: 'CSidebarNavItem',
             name: 'Kanban',
-            to:'/projects/' + project.id + '/kanban',
+            to:'/projects/kanban/' + project.id,
             icon: 'cil-chart-pie'
           }
           sidebarDataList.push(item)
@@ -89,7 +89,7 @@
           item = {
             _name: 'CSidebarNavItem',
             name: 'Backlogs',
-            to:'/projects/' + project.id + '/backlog',
+            to:'/projects/backlog/' + project.id,
             icon: 'cil-layers'
           }
           sidebarDataList.push(item)
@@ -97,7 +97,7 @@
           item = {
             _name: 'CSidebarNavItem',
             name: 'Details',
-            to:'/projects/' + project.id + '/details',
+            to:'/projects/details/' + project.id,
             icon: 'cil-star'
           }
           sidebarDataList.push(item)
