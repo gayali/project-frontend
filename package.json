@@ -1,25 +1,25 @@
 {
-  "name": "@coreui/coreui-free-vue-admin-template",
+  "name": "projectmanagementsystem",
   "version": "3.1.4",
-  "description": "Open Source Bootstrap Admin Template",
+  "description": "Self Hosted Project Management System",
   "author": {
-    "name": "CoreUI",
-    "url": "https://coreui.io",
-    "github": "https://github.com/coreui",
-    "twitter": "https://twitter.com/core_ui"
+    "name": "Project Management",
+    "url": "https://36central.com",
+    "github": "https://36central.com/",
+    "twitter": "https://twitter.com/36central"
   },
   "contributors": [
     {
-      "name": "CoreUI Team",
+      "name": "36 Central Team",
       "url": "https://github.com/orgs/coreui/people"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:coreui/coreui-free-vue-admin-template.git"
+    "url": "git@github.com:gayali/project-frontend.gits"
   },
-  "homepage": "http://coreui.io",
-  "copyright": "Copyright 2021 creativeLabs Łukasz Holeczek",
+  "homepage": "http://36central.com",
+  "copyright": "Copyright 2021 36 Central",
   "license": "MIT",
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -37,6 +37,7 @@
     "@coreui/utils": "^1.3.1",
     "@coreui/vue": "^3.2.9",
     "@coreui/vue-chartjs": "^1.0.6",
+    "axios": "^0.21.1",
     "vue": "~2.6.12",
     "vue-router": "^3.5.1",
     "vuex": "~3.6.2"
