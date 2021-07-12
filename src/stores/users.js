@@ -11,6 +11,7 @@ export default {
     loginError: '',
     status: '',
     accessToken: '',
+    users:{}
   },
   getters: {
     isLoggedin: (state) => (state.accessToken) && state.accessToken !== '' && state.isLoggedin,
@@ -19,12 +20,16 @@ export default {
     status: (state) => state.status,
     token: (state) => state.accessToken,
     user: (state) => state.user,
+    users:(state)=>state.users
   },
   mutations: {
     SET_USER(state, payload) {
       state.user = {
         ...payload
       }
+    },
+    SET_USERS(state,payload){
+      state.users=payload
     },
     SET_LOADING(state, loading) {
       state.loading = loading
@@ -46,9 +51,6 @@ export default {
     SET_STATUS(state, status) {
       state.status = status
     },
-    SET_USER_DETAILS(state,payload){
-      state.user = payload
-    }
   },
   actions: {
     async fetch({
@@ -100,6 +102,8 @@ export default {
             useRoute: true
           })
           dispatch('fetchUserDetails')
+          dispatch('fetchAll')
+         dispatch('tasks/fetch', { root: true })
           router.push('../dashboard')
         }
         commit('SET_LOADING', false)
@@ -119,16 +123,33 @@ export default {
         path: '../login'
       })
       dispatch('components/setModalVisibility', false, { root: true })
-      dispatch('setUser',{})
+      dispatch('setUser',{}) 
+      dispatch('setUsers',{})
+      dispatch('tasks/setTasks', {},{ root: true })
+
     },
     setUser({ commit }, payload){
-      commit('SET_USER_DETAILS',payload)
+      commit('SET_USER',payload)
+    },
+    setUsers({ commit }, payload){
+      commit('SET_USERS',payload)
     },
     async fetchUserDetails({ commit, dispatch }){
       try {
         const response = await repository.userDetails()
         if (response.status === 200 || response.status === 201) {
           dispatch('setUser', response.data)
+        }
+      } catch (e) {
+        console.log(e)
+        console.log(e.response)
+      }
+    },
+    async fetchAll({ commit, dispatch }){
+      try {
+        const response = await repository.fetchAll()
+        if (response.status === 200 || response.status === 201) {
+          commit('SET_USERS',response.data.users)
         }
       } catch (e) {
         console.log(e)

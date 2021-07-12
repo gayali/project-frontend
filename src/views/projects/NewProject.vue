@@ -41,7 +41,7 @@
         mapGetters
     } from "vuex"
     export default {
-        name: 'Login',
+        name: 'NewProject',
         computed: {
             ...mapGetters({
                 loading: 'projects/loading',

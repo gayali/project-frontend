@@ -22,6 +22,10 @@ const Backlog = () => import('@/views/projects/Backlog')
 const Details = () => import('@/views/projects/Details')
 const Kanban = () => import('@/views/projects/Kanban')
 
+//Tasks
+const NewTask=()=> import('@/views/projects/tasks/NewTask')
+const TaskDetails=()=> import('@/views/projects/tasks/TaskDetails')
+
 const router=new Router({
   mode: 'history', // https://router.vuejs.org/api/#mode
   linkActiveClass: 'active',
@@ -48,6 +52,14 @@ function configRoutes () {
             render (c) { return c('router-view') }
           },
           children: getProjects()
+        },
+        {
+          path: 'tasks',
+          name: 'Task',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: getTasks()
         },
       ]
     },
@@ -77,20 +89,35 @@ function getProjects(){
       component: NewProject
     },
     {
-      path: 'kanban/:id',
+      path: 'kanban',
       name: 'Kanban',
       component: Kanban
     },
     {
-      path: 'backlog/:id',
+      path: 'backlog',
       name: 'Backlog',
       component: Backlog
     },
     {
-      path: 'details/:id',
+      path: 'details',
       name: 'Project Details',
       component: Details
     }
+  ]
+}
+
+function getTasks(){
+  return [
+    {
+      path: 'newTask',
+      name: 'New Task',
+      component: NewTask
+    },
+    {
+      path: 'taskDetails',
+      name: 'Task Details',
+      component: TaskDetails
+    },
   ]
 }
 
