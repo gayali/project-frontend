@@ -16,12 +16,13 @@
         <CIcon name="cil-user" /> Profile
       </CDropdownItem>
 
-      <CDropdownItem @click="logout">
+      <CDropdownItem @click="logoutConfirm">
         <CIcon name="cil-lock-locked" /> Logout
       </CDropdownItem>
     </CDropdown>
-    <Modal @action="action" :color="'waring'" :noCloseOnBackdrop="false" :title="'Logout Confirm'" :actionButton="true"
-      :actionTitle="'Yes'" :closeTitle="'No'" :crossButton="false">Are you sure you want to logout ...?</Modal>
+    <Modal v-if="logoutConfirmModal" @close="close" :action="logout" :color="'warning'" :noCloseOnBackdrop="false"
+      :title="'Logout Confirm'" :actionButton="true" :actionTitle="'Yes'" :closeTitle="'No'" :crossButton="false">Are
+      you sure you want to logout ...?</Modal>
   </div>
 
 </template>
@@ -36,22 +37,22 @@
     components: {
       Modal
     },
-    computed: {
-      ...mapGetters({
-        modalVisibility: "components/modalVisibility",
-      }),
-    },
     data() {
       return {
         itemsCount: 42,
+        logoutConfirmModal: false
       }
     },
     methods: {
-      logout() {
-        this.$store.dispatch('components/setModalVisibility', true)
+      logoutConfirm() {
+        this.logoutConfirmModal = true;
       },
-      action() {
+      logout() {
+        this.logoutConfirmModal = false;
         this.$store.dispatch('users/logout')
+      },
+      close() {
+        this.logoutConfirmModal = false;
       }
     }
   }

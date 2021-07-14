@@ -1,31 +1,46 @@
 <template>
-    <CRow>
-        <CCol col="12" xl="8">
-            <CCard>
-                <CCardHeader>
-                    <strong> Backlogs</strong>
-                </CCardHeader>
-                <CCardBody>
-                    <CSpinner v-if="loading" color="primary" size="lg" />
-                    <CListGroup>
-                        <CListGroupItem tag="button" v-for="task in tasks" v-bind:key="task.id"
-                            class="d-flex justify-content-between align-items-center" @click="$route.push({name:'Task Details',query:{task:task}})">
-                            <strong> {{task.task_title}}</strong>
-                            <CBadge color="primary" shape="pill">{{task.branch_name}}</CBadge>
-                        </CListGroupItem>
-                    </CListGroup>
-                </CCardBody>
-            </CCard>
-        </CCol>
-    </CRow>
+    <div>
+        <CRow>
+            <CCol col="12" xl="8">
+                <CCard>
+                    <CCardHeader>
+                        <strong> Backlogs</strong>
+                    </CCardHeader>
+                    <CCardBody class="text-center">
+                        <CSpinner v-if="loading"  color="primary " size="lg" />
+                        <CListGroup>
+                            <CListGroupItem tag="button" v-for="task in tasks" v-bind:key="task.id"
+                                class="d-flex justify-content-between align-items-center" @click="setClickedUser(task)">
+                                <strong> {{task.task_title}}</strong>
+                                <CBadge color="primary" shape="pill">{{task.branch_name}}</CBadge>
+                            </CListGroupItem>
+                        </CListGroup>
+                    </CCardBody>
+                </CCard>
+            </CCol>
+        </CRow>
+  
+
+    <Modal :shouldColored="false" :noCloseOnBackdrop="false" :title="task.task_title" :closeTitle="'CLOSE'"
+        v-if="openDetailModal" @close="onClose">
+              <TaskDetails :task="task"></TaskDetails>
+    </Modal>
+    </div>
+
 </template>
 
 <script>
+    import Modal from '../components/Modal.vue'
     import {
         mapGetters
     } from "vuex"
+    import TaskDetails from './tasks/TaskDetails'
     export default {
         name: 'Backlog',
+        components: {
+            TaskDetails,
+            Modal
+        },
         computed: {
             ...mapGetters({
                 tasks: 'tasks/tasks',
@@ -34,7 +49,9 @@
         data() {
             return {
                 loading: false,
-                projectTask: []
+                projectTask: [],
+                task: {},
+                openDetailModal:false
             };
         },
         methods: {
@@ -47,6 +64,14 @@
                     }
                 }
                 this.loading = false
+            },
+            setClickedUser(task) {
+                this.task = task
+                 this.openDetailModal=true
+            },
+            onClose() {
+                this.openDetailModal=false
+                this.task = {}
             }
         },
         mounted() {

@@ -1,33 +1,38 @@
 <template>
-   <Modal></Modal>
+<div>   Hello ji
+    
+</div>
+ 
 </template>
 
 <script>
-import Modal from '../../components/Modal.vue'
+
     import {
         mapGetters
     } from "vuex"
     export default {
         name: 'TaskDetails',
-        components:{
-            Modal
+        props: {
+            task: {
+                default: null
+            }
         },
-       
         computed: {
             ...mapGetters({
                 loading: 'tasks/loading',
-               // editTaskError: 'tasks/editTaskError',
+                editTaskError: 'tasks/editTaskError',
             }),
         },
         data() {
             return {
-            };
+               
+            }
         },
         methods: {
-           
+
         },
         mounted() {
-            
+
 
         },
     }
