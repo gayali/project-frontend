@@ -21,7 +21,8 @@
         </CRow>
   
 
-    <Modal :shouldColored="false" :noCloseOnBackdrop="false" :title="task.task_title" :closeTitle="'CLOSE'"
+    <Modal :shouldColored="false" :noCloseOnBackdrop="false" :title="'EDIT TASK'" size="lg" :closeTitle="'CLOSE'"
+    :actionButton="true"   :actionTitle="'SUBMIT'" 
         v-if="openDetailModal" @close="onClose">
               <TaskDetails :task="task"></TaskDetails>
     </Modal>

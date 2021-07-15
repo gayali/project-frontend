@@ -5,7 +5,7 @@
             :color="shouldColored ? color : ''" :show.sync="show">
             <template #header>
                 <h6 class="modal-title">{{title}}</h6>
-                <CButtonClose v-if="crossButton" @click="close" class="text-white" />
+                <CButtonClose v-if="crossButton" @click="close" :class="shouldColored ? 'text-white':''" />
             </template>
 
             <slot>
