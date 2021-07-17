@@ -42,7 +42,6 @@
     beforeCreate() {
       this.$store.dispatch('projects/setLoading', true)
       this.$store.dispatch('projects/fetch').then(() => {
-
         try {
           let sidebarDataList = []
 

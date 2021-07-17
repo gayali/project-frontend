@@ -103,7 +103,7 @@ export default {
           })
           dispatch('fetchUserDetails')
           dispatch('fetchAll')
-         dispatch('tasks/fetch', { root: true })
+          dispatch('tasks/fetch',{},{ root: true })
           router.push('../dashboard')
         }
         commit('SET_LOADING', false)

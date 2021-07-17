@@ -7,9 +7,9 @@
                         <strong> Backlogs</strong>
                     </CCardHeader>
                     <CCardBody class="text-center">
-                        <CSpinner v-if="loading"  color="primary " size="lg" />
+                        <CSpinner v-if="loading" color="primary " size="lg" />
                         <CListGroup>
-                            <CListGroupItem tag="button" v-for="task in tasks" v-bind:key="task.id"
+                            <CListGroupItem tag="button" v-for="task in backLogTask" v-bind:key="task.id"
                                 class="d-flex justify-content-between align-items-center" @click="setClickedUser(task)">
                                 <strong> {{task.task_title}}</strong>
                                 <CBadge color="primary" shape="pill">{{task.branch_name}}</CBadge>
@@ -19,13 +19,12 @@
                 </CCard>
             </CCol>
         </CRow>
-  
 
-    <Modal :shouldColored="false" :noCloseOnBackdrop="false" :title="'EDIT TASK'" size="lg" :closeTitle="'CLOSE'"
-    :actionButton="true"   :actionTitle="'SUBMIT'" 
-        v-if="openDetailModal" @close="onClose">
-              <TaskDetails :task="task"></TaskDetails>
-    </Modal>
+
+        <Modal :shouldColored="false" :closeOnBackdrop="false" :title="'EDIT TASK'" size="lg" :actionButton="false"
+            :closeButton="false" v-if="openDetailModal" @close="onClose">
+            <TaskDetails :task="task"></TaskDetails>
+        </Modal>
     </div>
 
 </template>
@@ -36,6 +35,7 @@
         mapGetters
     } from "vuex"
     import TaskDetails from './tasks/TaskDetails'
+    import TaskTypes from '../../enums/taskTypes'
     export default {
         name: 'Backlog',
         components: {
@@ -46,13 +46,20 @@
             ...mapGetters({
                 tasks: 'tasks/tasks',
             }),
+            backLogTask() {
+
+                return this.tasks.filter((task) => {
+                  return (task.status === TaskTypes.BACKLOG)
+                })
+
+            }
         },
         data() {
             return {
                 loading: false,
                 projectTask: [],
                 task: {},
-                openDetailModal:false
+                openDetailModal: false
             };
         },
         methods: {
@@ -68,10 +75,10 @@
             },
             setClickedUser(task) {
                 this.task = task
-                 this.openDetailModal=true
+                this.openDetailModal = true
             },
             onClose() {
-                this.openDetailModal=false
+                this.openDetailModal = false
                 this.task = {}
             }
         },

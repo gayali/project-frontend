@@ -1,12 +1,12 @@
 <template>
   <CFooter :fixed="false">
     <div>
-      <a href="https://coreui.io" target="_blank">CoreUI</a>
-      <span class="ml-1">&copy; {{new Date().getFullYear()}} creativeLabs.</span>
+      <a href="https://36central.com" target="_blank">36 Central</a>
+      <span class="ml-1">&copy; {{new Date().getFullYear()}} </span>
     </div>
     <div class="mfs-auto">
       <span class="mr-1" target="_blank">Powered by</span>
-      <a href="https://coreui.io/vue">CoreUI for Vue</a>
+      <a href="https://36central.com">36 Central for Project Management</a>
     </div>
   </CFooter>
 </template>

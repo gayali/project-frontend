@@ -4,7 +4,7 @@
       <template #toggler>
         <CHeaderNavLink>
           <div class="c-avatar">
-            <img src="img/avatars/6.jpg" class="c-avatar-img " />
+            <avatar :username="avatar" :size="36"></avatar>
           </div>
         </CHeaderNavLink>
       </template>
@@ -20,8 +20,8 @@
         <CIcon name="cil-lock-locked" /> Logout
       </CDropdownItem>
     </CDropdown>
-    <Modal v-if="logoutConfirmModal" @close="close" :action="logout" :color="'warning'" :noCloseOnBackdrop="false"
-      :title="'Logout Confirm'" :actionButton="true" :actionTitle="'Yes'" :closeTitle="'No'" :crossButton="false">Are
+    <Modal v-if="logoutConfirmModal" @close="close" @action="logout" :color="'warning'" :title="'Logout Confirm'"
+      :actionButton="true" :actionTitle="'Yes'" :closeTitle="'No'" :crossButton="false">Are
       you sure you want to logout ...?</Modal>
   </div>
 
@@ -32,10 +32,22 @@
     mapGetters
   } from "vuex"
   import Modal from '../views/components/Modal.vue'
+  import Avatar from 'vue-avatar'
+
   export default {
     name: 'TheHeaderDropdownAccnt',
     components: {
-      Modal
+      Modal,
+      Avatar
+    },
+    computed: {
+      ...mapGetters({
+        user: 'users/user',
+      }),
+      avatar(){
+        if(this.user.name) return this.user.name
+        else return ''
+      }
     },
     data() {
       return {
@@ -52,9 +64,10 @@
         this.$store.dispatch('users/logout')
       },
       close() {
+
         this.logoutConfirmModal = false;
       }
-    }
+    },
   }
 </script>
 

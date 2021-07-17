@@ -10,12 +10,14 @@ import {
       loading: false,
       tasksError: '',
       newTaskError: '',
+      editTaskError:''
     },
     getters: {
       tasksError: (state) => state.tasksError,
       loading: (state) => state.loading,
       tasks: (state) => state.tasks,
       newTaskError: (state) => state.newTaskError,
+      editTaskError: (state) => state.editTaskError,
     },
     mutations: {
       SET_TASKS_ERROR(state, error) {
@@ -29,6 +31,9 @@ import {
       },
       SET_NEW_TASK_ERROR(state, error) {
         state.newTaskError = error
+      },
+      SET_EDIT_TASK_ERROR(state, error) {
+        state.editTaskError = error
       },
     },
     actions: {
@@ -98,6 +103,32 @@ import {
         commit
       }) {
         commit('SET_NEW_TASK_ERROR', '')
+        commit('SET_EDIT_TASK_ERROR', '')
+      },
+      
+      async edit({
+        commit,
+        state,
+        dispatch
+      }, payload) {
+        try {
+          commit('SET_LOADING', true)
+          const response = await repository.editTask(payload.id,payload)
+          if (response.status === 200 || response.status === 201) {
+            dispatch('fetch')
+            alert(response.data.message)
+            router.push({name:'Dashboard'})
+          } else {
+            commit('SET_EDIT_TASK_ERROR', response.data.message)
+          }
+          commit('SET_LOADING', false)
+        } catch (e) {
+          commit('SET_LOADING', false)
+          console.log(e)
+          console.log(e.response)
+          commit('SET_EDIT_TASK_ERROR', e.response.data.message)
+     
+        }
       },
     },
     namespaced: true

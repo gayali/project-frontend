@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <CModal :no-close-on-backdrop="noCloseOnBackdrop" :centered="centered" :size="size" :title="title"
+        <CModal :closeOnBackdrop="closeOnBackdrop" :centered="centered" :size="size" :title="title"
             :color="shouldColored ? color : ''" :show.sync="show">
             <template #header>
                 <h6 class="modal-title">{{title}}</h6>
@@ -25,19 +25,17 @@
 
 
 <script>
-    import {
-        mapGetters
-    } from "vuex"
+
     export default {
         name: 'Modal',
-        data(){
+        data() {
             return {
-                show:true
+                show: true
             }
         },
         props: {
-            noCloseOnBackdrop: {
-                default: true
+            closeOnBackdrop: {
+                default: false
             },
             title: {
                 default: null
@@ -66,13 +64,11 @@
             crossButton: {
                 default: true
             },
-            shouldColored:{
-                 default: true
+            shouldColored: {
+                default: true
             }
         },
-        computed: {
-          
-        },
+
         methods: {
             action() {
                 this.$emit('action')
