@@ -14,7 +14,7 @@ const Login = () => import('@/views/pages/Login')
 
 // Users
 const Users = () => import('@/views/users/Users')
-const User = () => import('@/views/users/User')
+const NewUser = () => import('@/views/users/NewUser')
 
 //Projects
 const NewProject = () => import('@/views/projects/NewProject')
@@ -23,23 +23,23 @@ const Details = () => import('@/views/projects/Details')
 const Kanban = () => import('@/views/projects/Kanban')
 
 //Tasks
-const NewTask=()=> import('@/views/projects/tasks/NewTask')
-const TaskDetails=()=> import('@/views/projects/tasks/TaskDetails')
+const NewTask = () => import('@/views/projects/tasks/NewTask')
+const TaskDetails = () => import('@/views/projects/tasks/TaskDetails')
 
-const router=new Router({
+const router = new Router({
   mode: 'history', // https://router.vuejs.org/api/#mode
   linkActiveClass: 'active',
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: configRoutes()
 })
 
-function configRoutes () {
-  return [
-    {
+function configRoutes() {
+  return [{
       path: '/',
       component: TheContainer,
-      children: [
-        {
+      children: [{
           path: 'dashboard',
           name: 'Dashboard',
           component: Dashboard
@@ -49,7 +49,9 @@ function configRoutes () {
           redirect: '/projects/new',
           name: 'Project',
           component: {
-            render (c) { return c('router-view') }
+            render(c) {
+              return c('router-view')
+            }
           },
           children: getProjects()
         },
@@ -57,9 +59,21 @@ function configRoutes () {
           path: 'tasks',
           name: 'Task',
           component: {
-            render (c) { return c('router-view') }
+            render(c) {
+              return c('router-view')
+            }
           },
           children: getTasks()
+        },
+        {
+          path: 'user',
+          name: 'User',
+          component: {
+            render(c) {
+              return c('router-view')
+            }
+          },
+          children: getUsers()
         },
       ]
     },
@@ -67,23 +81,23 @@ function configRoutes () {
       path: '/',
       name: 'page',
       component: {
-        render (c) { return c('router-view') }
+        render(c) {
+          return c('router-view')
+        }
       },
-      children: [
-        {
-          path: '/login',
-          name: 'login',
-          component: Login
-        },
-      ]
+      children: [{
+        path: '/login',
+        name: 'login',
+        component: Login
+      }, ]
     },
-   
-   
+
+
   ]
 }
-function getProjects(){
-  return [
-    {
+
+function getProjects() {
+  return [{
       path: 'new',
       name: 'New Project',
       component: NewProject
@@ -106,9 +120,8 @@ function getProjects(){
   ]
 }
 
-function getTasks(){
-  return [
-    {
+function getTasks() {
+  return [{
       path: 'newTask',
       name: 'New Task',
       component: NewTask
@@ -121,19 +134,39 @@ function getTasks(){
   ]
 }
 
+function getUsers() {
+  return [{
+      path: 'users',
+      name: 'Users',
+      component: Users
+    },
+    {
+      path: 'new',
+      name: 'New User',
+      component: NewUser
+    }
+  ]
+}
+
 router.beforeEach((to, from, next) => {
   if (auth.isAuthenticated()) {
-   if(to.fullPath==="/login" || to.fullPath==="/") {
-    next({ name: 'Dashboard' })
-   }
+    if (to.fullPath === "/login" || to.fullPath === "/") {
+      next({
+        name: 'Dashboard'
+      })
+    }
     store.dispatch('users/fetch')
-  }else if(to.fullPath!=="/login"){
-    next({ name: 'login' })
+  } else if (to.fullPath !== "/login") {
+    next({
+      name: 'login'
+    })
   }
   // If the user is not authenticated, he/she will be redirected to the login page
   if (to.matched.some(m => m.meta.protected) && !auth.isAuthenticated()) {
     auth.clearToken()
-    next({ name: 'login' })
+    next({
+      name: 'login'
+    })
   } else {
     next()
   }

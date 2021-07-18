@@ -44,8 +44,8 @@
       ...mapGetters({
         user: 'users/user',
       }),
-      avatar(){
-        if(this.user.name) return this.user.name
+      avatar() {
+        if (this.user.name) return this.user.name
         else return ''
       }
     },
@@ -67,6 +67,9 @@
 
         this.logoutConfirmModal = false;
       }
+    },
+    async beforeMount() {
+      if (Object.entries(this.user).length === 0) await this.$store.dispatch('users/fetchUserDetails')
     },
   }
 </script>

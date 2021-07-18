@@ -2,8 +2,12 @@
   <CSidebar fixed :minimize="minimize" :show="show"
     @update:show="(value) => $store.dispatch('sidebar/setSidebarShow', value)">
     <CSidebarBrand class="d-md-down-none" to="/">
-      <CIcon class="c-sidebar-brand-full" name="logo" size="custom-size" :height="35" viewBox="0 0 556 134" />
-      <CIcon class="c-sidebar-brand-minimized" name="logo" size="custom-size" :height="35" viewBox="0 0 110 134" />
+      <!-- <CIcon class="c-sidebar-brand-full" name="logo" size="custom-size" :height="35" viewBox="0 0 556 134" /> -->
+       <CImg  class="c-sidebar-brand-full" src="img/logo.png" :height="50" size="custom-size"></CImg>
+           <CImg  class="c-sidebar-brand-minimized" src="img/small-logo.png" :height="50" size="custom-size"></CImg>
+      <!-- <CIcon class="c-sidebar-brand-minimized" name="logo" size="custom-size" :height="35" viewBox="0 0 110 134" /> -->
+
+     
     </CSidebarBrand>
 
 
@@ -36,12 +40,19 @@
       },
       minimize() {
         return this.sidebarMinimize
-      }
+      },
+      
     },
 
-    beforeCreate() {
+    async beforeMount() {
       this.$store.dispatch('projects/setLoading', true)
-      this.$store.dispatch('projects/fetch').then(() => {
+
+      if (Object.entries(this.projects).length === 0) await this.$store.dispatch('projects/fetch')
+      this.setSidebar()
+
+    },
+    methods: {
+      setSidebar() {
         try {
           let sidebarDataList = []
 
@@ -61,6 +72,28 @@
             icon: 'cil-calculator',
           }
           sidebarDataList.push(item)
+
+
+          item = {
+              _name: 'CSidebarNavDropdown',
+              name: 'Users',
+              route: '/user',
+              icon: 'cil-user',
+              items: [{
+                  name: 'Users Table',
+                  to: '/user/users'
+                },
+                {
+                  name: 'New User',
+                  to: '/user/new'
+                },
+
+              ]
+            },
+
+
+            sidebarDataList.push(item)
+
 
           item = {
             _name: 'CSidebarNavDivider',
@@ -123,9 +156,7 @@
           console.error(e)
           this.$store.dispatch('projects/setLoading', false)
         }
-
-      })
-
-    }
+      }
+    },
   }
 </script>

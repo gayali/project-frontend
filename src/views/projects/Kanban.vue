@@ -3,15 +3,21 @@
         <div class="d-inline-flex">
             <CCard class="bg-section m-1 " v-for="taskType in taskTypes.allTypes" v-bind:key="taskType">
                 <CCardHeader class="text-center">
-                    <h5 class="m-0"><strong>{{taskType}}</strong></h5>
+                    <h6 class="m-0"><strong>{{taskType}}</strong></h6>
                 </CCardHeader>
                 <CCardBody class="px-2">
+                    <div class="text-center m-4" >
+                         <CSpinner  v-if="taskLoading" color="primary " size="lg" />
+                    </div>
+                     
                     <template v-for="task in tasks">
-                        <CCard class="task-card" v-bind:key="task.id" v-if="task.status===taskType" @click="setClickedUser(task)" >
+                        <CCard class="task-card" v-bind:key="task.id" v-if="task.status===taskType && !taskLoading"
+                            @click="setClickedUser(task)">
                             <CCardBody>
                                 <CRow class="mb-4">
                                     <CCol col="12">
-                                        <CBadge color="primary" >{{task.branch_name}}</CBadge></CCol>
+                                        <CBadge color="primary">{{task.branch_name}}</CBadge>
+                                    </CCol>
                                     <CCol col="12">{{task.task_title}}</CCol>
                                 </CRow>
                                 <CRow>
@@ -21,7 +27,8 @@
                                     </CCol>
 
                                     <CCol col="5" class="text-right">
-                                        <avatar :username="task.asignee_user.name" :size="30" style="float:right">
+                                        <avatar :username="task.asignee_user.name" :size="30" style="float:right"
+                                            v-c-tooltip.hover="task.asignee_user.name">
                                         </avatar>
                                     </CCol>
                                 </CRow>
@@ -62,6 +69,7 @@
         computed: {
             ...mapGetters({
                 tasks: 'tasks/tasks',
+                taskLoading: 'tasks/loading',
             }),
         },
         data() {
@@ -95,21 +103,17 @@
                 this.task = task
                 this.openDetailModal = true
             },
-            onClose() {
+            async onClose() {
                 this.openDetailModal = false
                 this.task = {}
+                await this.$store.dispatch('tasks/fetch')
             }
         },
-        mounted() {
-            if (this.tasks === {} || this.tasks.length === 0 || this.tasks.length === undefined) {
-                this.$store.dispatch('tasks/fetch').then(() => {
-                    this.getProjectTasks()
-
-                })
-            } else {
-                this.getProjectTasks()
-            }
-        }
+        async beforeMount() {
+            let tasks = Object.entries(this.tasks)
+            if (tasks.length === 0) await this.$store.dispatch('tasks/fetch')
+            this.getProjectTasks()
+        },
     }
 </script>
 <style scoped>

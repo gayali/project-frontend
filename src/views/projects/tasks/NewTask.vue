@@ -23,12 +23,9 @@
                             </CCol>
                         </CRow>
 
+                        <div class="mb-2">Task Description</div>
+                        <vue-editor v-model="task.description" :editorToolbar="customToolbar" required></vue-editor>
 
-
-
-                        <CTextarea autocomplete="Task Description" aria-label="Task Description" name="description"
-                            v-model="task.description" label="Task Description" placeholder="Enter Task Description"
-                            @focus="resetError" required rows="6" />
                     </CCardBody>
                     <CCardFooter>
                         <CRow>
@@ -51,10 +48,16 @@
 
 <script>
     import {
+        VueEditor
+    } from "vue2-editor"
+    import {
         mapGetters
     } from "vuex"
     export default {
         name: 'NewTask',
+        components: {
+            VueEditor
+        },
         computed: {
             ...mapGetters({
                 loading: 'tasks/loading',
@@ -72,6 +75,15 @@
                     assignee_user_id: 1,
                 },
                 options: [],
+                customToolbar: [
+                    ["bold", "italic", "underline"],
+                    [{
+                        list: "ordered"
+                    }, {
+                        list: "bullet"
+                    }],
+                    ["code-block"]
+                ]
             };
         },
         methods: {
@@ -91,15 +103,10 @@
                 }
             }
         },
-        mounted() {
-            if (this.users === {}||this.users.length===0||this.users.length===undefined) {
-                this.$store.dispatch('users/fetchAll').then(() => {
-                    this.fetchUser()
-                })
-            }else{
-                 this.fetchUser()
-            }
-
+         async beforeMount() {
+            let users=Object.entries(this.users)
+            if(users.length===0) await this.$store.dispatch('users/fetchAll')
+            this.fetchUser()
         },
     }
 </script>

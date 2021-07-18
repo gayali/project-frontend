@@ -4,15 +4,15 @@
             <CCard>
                 <CForm @submit.prevent="submit">
                     <CCardBody>
-                        <CInput placeholder="Enter Project Name" label="Project Name" autocomplete="Project Name" aria-label="Project Name"
-                            name="projectName" @focus="resetError" type="text" v-model="projectName" required>
+                        <CInput placeholder="Enter Project Name" label="Project Name" autocomplete="Project Name"
+                            aria-label="Project Name" name="projectName" @focus="resetError" type="text"
+                            v-model="projectName" required>
                             <template #prepend-content>
                                 <CIcon name="cil-calculator" /></template>
                         </CInput>
-                        
-                        <CTextarea autocomplete="Project Description" aria-label="Project Description"
-                            name="projectDescription" v-model="projectDescription" label="Project Description"
-                            placeholder="Enter Project Description" @focus="resetError" required rows="6" />
+                        <div class="mb-2">Project Description</div>
+                        <vue-editor v-model="projectDescription" :editorToolbar="customToolbar" required></vue-editor>
+
                     </CCardBody>
                     <CCardFooter>
                         <CRow>
@@ -40,8 +40,14 @@
     import {
         mapGetters
     } from "vuex"
+    import {
+        VueEditor
+    } from "vue2-editor"
     export default {
         name: 'NewProject',
+        components: {
+            VueEditor
+        },
         computed: {
             ...mapGetters({
                 loading: 'projects/loading',
@@ -52,6 +58,15 @@
             return {
                 projectName: '',
                 projectDescription: '',
+                customToolbar: [
+                    ["bold", "italic", "underline"],
+                    [{
+                        list: "ordered"
+                    }, {
+                        list: "bullet"
+                    }],
+                    ["code-block"]
+                ]
             };
         },
         methods: {
@@ -64,6 +79,9 @@
             async resetError(event) {
                 await this.$store.dispatch("projects/resetError");
             },
+        },
+        async beforeMount() {
+            await this.$store.dispatch('users/canAccess')
         },
     }
 </script>

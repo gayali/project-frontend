@@ -18,9 +18,9 @@
                     <CInput label="Project Prefix" autocomplete="Project Prefix" aria-label="Project Prefix"
                         name="prefix" readonly type="text" v-model="prefix">
                     </CInput>
-                    <CTextarea autocomplete="Project Description" aria-label="Project Description"
-                        name="projectDescription" v-model="projectDescription" label="Project Description"
-                        placeholder=" Project Description" readonly rows="6" />
+
+                     <div class="mb-2">Project Description</div>
+                        <vue-editor v-model="projectDescription" readonly :editorToolbar="customToolbar" required></vue-editor>
                 </CCardBody>
                 <CCardFooter>
                     <CRow>
@@ -39,8 +39,14 @@
     import {
         mapGetters
     } from "vuex"
+        import {
+        VueEditor
+    } from "vue2-editor"
     export default {
         name: 'Details',
+        components: {
+            VueEditor
+        },
         computed: {
             ...mapGetters({
                 projects: 'projects/projects',
@@ -50,7 +56,16 @@
             return {
                 projectName: null,
                 projectDescription: null,
-                prefix: null
+                prefix: null,
+                 customToolbar: [
+                    ["bold", "italic", "underline"],
+                    [{
+                        list: "ordered"
+                    }, {
+                        list: "bullet"
+                    }],
+                    ["code-block"]
+                ]
             };
         },
         methods: {
@@ -71,14 +86,10 @@
                 }
             }
         },
-        mounted() {
-            if (this.projects === {} || this.projects.length === 0 || this.projects.length === undefined) {
-                this.$store.dispatch('projects/fetch').then(() => {
-                    this.getProjects()
-                })
-            } else {
-                this.getProjects()
-            }
-        }
+        async beforeMount() {
+            let projects=Object.entries(this.projects)
+            if(projects.length===0) await this.$store.dispatch('projects/fetch')
+            this.getProjects()
+        },
     }
 </script>

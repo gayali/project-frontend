@@ -1,6 +1,9 @@
-import { RepositoryFactory } from '@/api/repositoryFactory'
+import {
+  RepositoryFactory
+} from '@/api/repositoryFactory'
 import router from '../js/router'
 import auth from '../js/helpers/auth'
+import * as Roles from "../enums/roles"
 const repository = RepositoryFactory.get('users')
 
 export default {
@@ -11,7 +14,9 @@ export default {
     loginError: '',
     status: '',
     accessToken: '',
-    users:{}
+    users: {},
+    newUserError: '',
+    editUserError: ''
   },
   getters: {
     isLoggedin: (state) => (state.accessToken) && state.accessToken !== '' && state.isLoggedin,
@@ -20,16 +25,24 @@ export default {
     status: (state) => state.status,
     token: (state) => state.accessToken,
     user: (state) => state.user,
-    users:(state)=>state.users
+    users: (state) => state.users,
+    newUserError: (state) => state.newUserError,
+    editUserError: (state) => state.editUserError
   },
   mutations: {
+    SET_NEW_USER_ERROR(state, payload) {
+      state.newUserError = payload
+    },
+    SET_EDIT_USER_ERROR(state, payload) {
+      state.editUserError = payload
+    },
     SET_USER(state, payload) {
       state.user = {
         ...payload
       }
     },
-    SET_USERS(state,payload){
-      state.users=payload
+    SET_USERS(state, payload) {
+      state.users = payload
     },
     SET_LOADING(state, loading) {
       state.loading = loading
@@ -87,6 +100,8 @@ export default {
       commit
     }) {
       commit('SET_LOGIN_ERROR', '')
+      commit('SET_NEW_USER_ERROR', '')
+      commit('SET_EDIT_USER_ERROR', '')
     },
     async login({
       commit,
@@ -103,7 +118,9 @@ export default {
           })
           dispatch('fetchUserDetails')
           dispatch('fetchAll')
-          dispatch('tasks/fetch',{},{ root: true })
+          dispatch('tasks/fetch', {}, {
+            root: true
+          })
           router.push('../dashboard')
         }
         commit('SET_LOADING', false)
@@ -116,25 +133,39 @@ export default {
       }
     },
 
-    logout({ commit, dispatch }) {
+    logout({
+      commit,
+      dispatch
+    }) {
       commit('IS_LOGGED_IN', false)
       commit('RESET_TOKEN')
       router.push({
         path: '../login'
       })
-      dispatch('components/setModalVisibility', false, { root: true })
-      dispatch('setUser',{}) 
-      dispatch('setUsers',{})
-      dispatch('tasks/setTasks', {},{ root: true })
+      dispatch('components/setModalVisibility', false, {
+        root: true
+      })
+      dispatch('setUser', {})
+      dispatch('setUsers', {})
+      dispatch('tasks/setTasks', {}, {
+        root: true
+      })
 
     },
-    setUser({ commit }, payload){
-      commit('SET_USER',payload)
+    setUser({
+      commit
+    }, payload) {
+      commit('SET_USER', payload)
     },
-    setUsers({ commit }, payload){
-      commit('SET_USERS',payload)
+    setUsers({
+      commit
+    }, payload) {
+      commit('SET_USERS', payload)
     },
-    async fetchUserDetails({ commit, dispatch }){
+    async fetchUserDetails({
+      commit,
+      dispatch
+    }) {
       try {
         const response = await repository.userDetails()
         if (response.status === 200 || response.status === 201) {
@@ -145,18 +176,114 @@ export default {
         console.log(e.response)
       }
     },
-    async fetchAll({ commit, dispatch }){
+    async fetchAll({
+      commit,
+      dispatch
+    }) {
       try {
         const response = await repository.fetchAll()
         if (response.status === 200 || response.status === 201) {
-          commit('SET_USERS',response.data.users)
+          commit('SET_USERS', response.data.users)
         }
       } catch (e) {
         console.log(e)
         console.log(e.response)
       }
-    }
+    },
+    set_new_user_error({
+      commit,
+      dispatch
+    }, payload) {
+      commit('SET_NEW_USER_ERROR', payload)
+    },
+    set_edit_user_error({
+      commit,
+      dispatch
+    }, payload) {
+      commit('SET_EDIT_USER_ERROR', payload)
+    },
+    async new({
+      commit,
+      dispatch
+    }, payload) {
+      try {
+        commit('SET_LOADING', true)
 
+        const response = await repository.newUser(payload)
+
+        if (response.status === 200 || response.status === 201) {
+          dispatch('fetchAll')
+          alert(response.data.message)
+          router.push({
+            name: 'Dashboard'
+          })
+        } else {
+          commit('SET_NEW_USER_ERROR', response.data.message)
+
+        }
+        commit('SET_LOADING', false)
+      } catch (e) {
+        commit('SET_LOADING', false)
+        console.log(e)
+        console.log(e.response)
+        commit('SET_NEW_USER_ERROR', e.response.data.message)
+      }
+    },
+    async edit({
+      commit,
+      dispatch
+    }, payload) {
+      try {
+        commit('SET_LOADING', true)
+        const response = await repository.edit(payload.id, payload)
+
+        if (response.status === 200 || response.status === 201) {
+          dispatch('fetchAll')
+          alert(response.data.message)
+          router.push({
+            name: 'Dashboard'
+          })
+        } else {
+          commit('SET_EDIT_USER_ERROR', response.data.message)
+
+        }
+        commit('SET_LOADING', false)
+      } catch (e) {
+        commit('SET_LOADING', false)
+        console.log(e)
+        console.log(e.response)
+        commit('SET_EDIT_USER_ERROR', e.response.data.message)
+      }
+    },
+
+    async canAccess({
+      commit,
+      state,
+      dispatch
+    }, payload) {
+      try {
+        let user=Object.entries(state.user)
+        if (user.length === 0)  await dispatch('fetchUserDetails')
+
+        if (state.user.roles.length !== 0 ) {
+          if(state.user.roles[0].name !== Roles.ADMIN){
+           
+            alert('Not allowed to this route')
+            router.push({
+              name: 'Dashboard'
+            })
+            return false
+          }else if(state.user.roles[0].name === Roles.ADMIN){
+            return true
+          }
+        }
+      } catch (e) {
+     
+        console.log(e)
+        alert(e)   
+        return false
+      }
+    },
   },
   namespaced: true
 }

@@ -7,7 +7,7 @@
                         <strong> Backlogs</strong>
                     </CCardHeader>
                     <CCardBody class="text-center">
-                        <CSpinner v-if="loading" color="primary " size="lg" />
+                        <CSpinner v-if="loading || taskLoading" color="primary " size="lg" />
                         <CListGroup>
                             <CListGroupItem tag="button" v-for="task in backLogTask" v-bind:key="task.id"
                                 class="d-flex justify-content-between align-items-center" @click="setClickedUser(task)">
@@ -45,12 +45,16 @@
         computed: {
             ...mapGetters({
                 tasks: 'tasks/tasks',
+                taskLoading:'tasks/loading',
             }),
             backLogTask() {
 
-                return this.tasks.filter((task) => {
-                  return (task.status === TaskTypes.BACKLOG)
-                })
+                let tasks = Object.entries(this.tasks)
+                if (tasks.length !== 0) {
+                    return this.tasks.filter((task) => {
+                        return (task.status === TaskTypes.BACKLOG)
+                    })
+                }
 
             }
         },
@@ -77,21 +81,16 @@
                 this.task = task
                 this.openDetailModal = true
             },
-            onClose() {
+            async onClose() {
                 this.openDetailModal = false
                 this.task = {}
+                await this.$store.dispatch('tasks/fetch')
             }
         },
-        mounted() {
-            if (this.tasks === {} || this.tasks.length === 0 || this.tasks.length === undefined) {
-                this.$store.dispatch('tasks/fetch').then(() => {
-                    this.getProjectTasks()
-
-                })
-            } else {
-                this.getProjectTasks()
-            }
-
-        }
+        async beforeMount() {
+            let tasks=Object.entries(this.tasks)
+            if(tasks.length===0) await this.$store.dispatch('tasks/fetch')
+            this.getProjectTasks()
+        },
     }
 </script>
