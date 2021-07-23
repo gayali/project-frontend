@@ -4,13 +4,13 @@
             <CCol col="12" xl="8">
                 <CCard>
                     <CCardHeader>
-                        <strong> Backlogs</strong>
+                        <strong> Finished</strong>
                     </CCardHeader>
                     <CCardBody class="text-center">
                         <CSpinner v-if="loading || taskLoading" color="primary " size="lg" />
                         <CListGroup>
-                            <CListGroupItem tag="button" v-for="task in backLogTask" v-bind:key="task.id"
-                                class="d-flex justify-content-between align-items-center" @click="$router.push({name:'Task Details', query: { task: JSON.stringify(task) } })">
+                            <CListGroupItem tag="button" v-for="task in finishedTask" v-bind:key="task.id"
+                                class="d-flex justify-content-between align-items-center" @click="setClickedUser(task)">
                                 <strong> {{task.task_title}}</strong>
                                 <CBadge color="primary" shape="pill">{{task.branch_name}}</CBadge>
                             </CListGroupItem>
@@ -19,6 +19,12 @@
                 </CCard>
             </CCol>
         </CRow>
+
+
+        <Modal :shouldColored="false" :closeOnBackdrop="false" :title="'EDIT TASK'" size="lg" :actionButton="false"
+            :closeButton="false" v-if="openDetailModal" @close="onClose">
+            <TaskDetails :task="task"></TaskDetails>
+        </Modal>
     </div>
 
 </template>
@@ -31,7 +37,7 @@
     import TaskDetails from './tasks/TaskDetails'
     import TaskTypes from '../../enums/taskTypes'
     export default {
-        name: 'Backlog',
+        name: 'Finished',
         components: {
             TaskDetails,
             Modal
@@ -41,11 +47,12 @@
                 tasks: 'tasks/tasks',
                 taskLoading:'tasks/loading',
             }),
-            backLogTask() {
+            finishedTask() {
+
                 let tasks = Object.entries(this.tasks)
                 if (tasks.length !== 0) {
                     return this.tasks.filter((task) => {
-                        return (task.status === TaskTypes.BACKLOG)
+                        return (task.status === TaskTypes.FINISHED)
                     })
                 }
 
@@ -55,6 +62,7 @@
             return {
                 loading: false,
                 projectTask: [],
+                task: {},
                 openDetailModal: false
             };
         },
@@ -69,6 +77,15 @@
                 }
                 this.loading = false
             },
+            setClickedUser(task) {
+                this.task = task
+                this.openDetailModal = true
+            },
+            async onClose() {
+                this.openDetailModal = false
+                this.task = {}
+                await this.$store.dispatch('tasks/fetch')
+            }
         },
         async beforeMount() {
             let tasks=Object.entries(this.tasks)

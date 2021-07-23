@@ -7,9 +7,33 @@ const TEST = 'Test'
 const STAGING = 'Staging'
 const ARCHIVE = 'Archive'
 const PRODUCTION = 'Production'
+const FINISHED = 'Finished'
+export const allTypes = [BACKLOG, TODO, DOING, READYFORREVIEW, DEV, TEST, STAGING, ARCHIVE, PRODUCTION, FINISHED]
+export const allKanbanTypes = [BACKLOG, TODO, DOING, READYFORREVIEW, DEV, TEST, STAGING, ARCHIVE, PRODUCTION]
+export {
+    BACKLOG,
+    TODO,
+    DOING,
+    READYFORREVIEW,
+    DEV,
+    TEST,
+    STAGING,
+    ARCHIVE,
+    PRODUCTION,
+    FINISHED,
+}
 
-export const allTypes = [ BACKLOG, TODO, DOING, READYFORREVIEW, DEV, TEST, STAGING, ARCHIVE, PRODUCTION ]
-
-export { BACKLOG, TODO, DOING, READYFORREVIEW, DEV, TEST, STAGING, ARCHIVE, PRODUCTION }
-
-export default { BACKLOG, TODO, DOING, READYFORREVIEW, DEV, TEST, STAGING, ARCHIVE, PRODUCTION,allTypes }
+export default {
+    BACKLOG,
+    TODO,
+    DOING,
+    READYFORREVIEW,
+    DEV,
+    TEST,
+    STAGING,
+    ARCHIVE,
+    PRODUCTION,
+    FINISHED,
+    allTypes,
+    allKanbanTypes
+}

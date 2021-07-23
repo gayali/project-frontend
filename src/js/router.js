@@ -19,6 +19,7 @@ const NewUser = () => import('@/views/users/NewUser')
 //Projects
 const NewProject = () => import('@/views/projects/NewProject')
 const Backlog = () => import('@/views/projects/Backlog')
+const Finished = () => import('@/views/projects/Finished')
 const Details = () => import('@/views/projects/Details')
 const Kanban = () => import('@/views/projects/Kanban')
 
@@ -111,6 +112,11 @@ function getProjects() {
       path: 'backlog',
       name: 'Backlog',
       component: Backlog
+    },
+    {
+      path: 'finished',
+      name: 'Finished',
+      component: Finished
     },
     {
       path: 'details',

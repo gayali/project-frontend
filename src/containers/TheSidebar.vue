@@ -135,6 +135,14 @@
 
             item = {
               _name: 'CSidebarNavItem',
+              name: 'Finished',
+              to: '/projects/finished?id=' + project.id,
+              icon: 'cil-check'
+            }
+            sidebarDataList.push(item)
+
+            item = {
+              _name: 'CSidebarNavItem',
               name: 'Details',
               to: '/projects/details?id=' + project.id,
               icon: 'cil-star'

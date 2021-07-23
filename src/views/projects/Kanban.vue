@@ -1,7 +1,7 @@
 <template>
     <div class="kanban-view-class">
         <div class="d-inline-flex">
-            <CCard class="bg-section m-1 " v-for="taskType in taskTypes.allTypes" v-bind:key="taskType">
+            <CCard class="bg-section m-1 " v-for="taskType in taskTypes.allKanbanTypes" v-bind:key="taskType">
                 <CCardHeader class="text-center">
                     <h6 class="m-0"><strong>{{taskType}}</strong></h6>
                 </CCardHeader>
@@ -12,7 +12,7 @@
                      
                     <template v-for="task in tasks">
                         <CCard class="task-card" v-bind:key="task.id" v-if="task.status===taskType && !taskLoading"
-                            @click="setClickedUser(task)">
+                            @click="$router.push({name:'Task Details', query: { task: JSON.stringify(task) } })">
                             <CCardBody>
                                 <CRow class="mb-4">
                                     <CCol col="12">
@@ -21,12 +21,12 @@
                                     <CCol col="12">{{task.task_title}}</CCol>
                                 </CRow>
                                 <CRow>
-                                    <CCol col="7">
+                                    <CCol col="9">
                                         <CIcon name="cilCalendar" class="icon-bal mr-1" />
                                         {{task.updated_at|moment }}
                                     </CCol>
 
-                                    <CCol col="5" class="text-right">
+                                    <CCol col="3" class="text-right">
                                         <avatar :username="task.asignee_user.name" :size="30" style="float:right"
                                             v-c-tooltip.hover="task.asignee_user.name">
                                         </avatar>
@@ -40,12 +40,6 @@
             </CCard>
 
         </div>
-
-
-        <Modal :shouldColored="false" :closeOnBackdrop="false" :title="'EDIT TASK'" size="lg" :actionButton="false"
-            :closeButton="false" v-if="openDetailModal" @close="onClose">
-            <TaskDetails :task="task"></TaskDetails>
-        </Modal>
     </div>
 
 </template>
@@ -84,7 +78,8 @@
         },
         filters: {
             moment: function (date) {
-                return moment(date).format('DD/MM/YYYY');
+              //   moment(date).format('DD/MM/YYYY');
+               return moment(date).fromNow()
             }
         },
         methods: {
@@ -98,16 +93,6 @@
                 }
                 this.loading = false
             },
-
-            setClickedUser(task) {
-                this.task = task
-                this.openDetailModal = true
-            },
-            async onClose() {
-                this.openDetailModal = false
-                this.task = {}
-                await this.$store.dispatch('tasks/fetch')
-            }
         },
         async beforeMount() {
             let tasks = Object.entries(this.tasks)
