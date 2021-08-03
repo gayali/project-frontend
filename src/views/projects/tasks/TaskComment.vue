@@ -27,17 +27,15 @@
                     <CForm @submit.prevent="submit">
                         <CCardHeader class="pb-4">
                             <strong>Add Comment</strong>
-
                             <CButton color="primary" class="col-4 col-md-1 col-lg-1 mb-1 float-right" :disabled="newTaskCommentsLoading"
                                 type="submit">
                                 <CSpinner v-if="newTaskCommentsLoading" color="light" size="sm" /> Add</CButton>
                         </CCardHeader>
 
-
                         <CCardBody>
                             <div class="alert alert-danger col-12" role="alert" v-if="addTaskCommentError !== ''">
                                 {{ addTaskCommentError }}</div>
-                            <vue-editor v-model="comment" :editorToolbar="customToolbar" required></vue-editor>
+                            <vue-editor v-model="comment" :editorToolbar="customToolbar"  @focus="resetError" required ></vue-editor>
                         </CCardBody>
 
                     </CForm>
@@ -111,6 +109,9 @@
                     if (this.addTaskCommentError === '') this.comment = null
                 }
             },
+             async resetError(event) {
+                await this.$store.dispatch('taskComments/resetError')
+            },
         },
         async beforeMount() {
             this.$store.dispatch('taskComments/setNewTaskCommentsLoading', true)
@@ -121,6 +122,7 @@
         beforeUnmount() {
             this.$store.dispatch('taskComments/setTaskComments', {})
         },
+        
         
     }
 </script>

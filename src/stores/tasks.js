@@ -130,6 +130,29 @@ import {
      
         }
       },
+
+      async delete({
+        commit,
+        state,
+        dispatch
+      }, payload) {
+        try {
+          commit('SET_LOADING', true)
+          const response = await repository.deleteTask(payload)
+          alert(response.data.message)
+          if (response.status === 200 || response.status === 201)  {
+            dispatch('fetch')
+            router.push({name:'Dashboard'})
+          }
+          commit('SET_LOADING', false)
+        } catch (e) {
+          commit('SET_LOADING', false)
+          console.log(e)
+          console.log(e.response)
+          alert(response.data.message)
+      
+        }
+      },
     },
     namespaced: true
   }

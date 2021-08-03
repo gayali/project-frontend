@@ -10,7 +10,7 @@
                         <CSpinner v-if="loading || taskLoading" color="primary " size="lg" />
                         <CListGroup>
                             <CListGroupItem tag="button" v-for="task in finishedTask" v-bind:key="task.id"
-                                class="d-flex justify-content-between align-items-center" @click="setClickedUser(task)">
+                                class="d-flex justify-content-between align-items-center" @click="$router.push({name:'Task Details', query: { task: JSON.stringify(task) } })">
                                 <strong> {{task.task_title}}</strong>
                                 <CBadge color="primary" shape="pill">{{task.branch_name}}</CBadge>
                             </CListGroupItem>
@@ -19,14 +19,7 @@
                 </CCard>
             </CCol>
         </CRow>
-
-
-        <Modal :shouldColored="false" :closeOnBackdrop="false" :title="'EDIT TASK'" size="lg" :actionButton="false"
-            :closeButton="false" v-if="openDetailModal" @close="onClose">
-            <TaskDetails :task="task"></TaskDetails>
-        </Modal>
     </div>
-
 </template>
 
 <script>
@@ -52,7 +45,8 @@
                 let tasks = Object.entries(this.tasks)
                 if (tasks.length !== 0) {
                     return this.tasks.filter((task) => {
-                        return (task.status === TaskTypes.FINISHED)
+                         return (task.project_id == this.$route.query.id && task.status === TaskTypes.FINISHED)
+
                     })
                 }
 
@@ -61,36 +55,13 @@
         data() {
             return {
                 loading: false,
-                projectTask: [],
-                task: {},
                 openDetailModal: false
             };
-        },
-        methods: {
-            getProjectTasks() {
-                this.loading = true
-                for (let i = 0; i < this.tasks.length; i++) {
-                    const task = this.tasks[i];
-                    if (task.project_id === parseInt(this.$route.query.id)) {
-                        this.projectTask.push(task)
-                    }
-                }
-                this.loading = false
-            },
-            setClickedUser(task) {
-                this.task = task
-                this.openDetailModal = true
-            },
-            async onClose() {
-                this.openDetailModal = false
-                this.task = {}
-                await this.$store.dispatch('tasks/fetch')
-            }
         },
         async beforeMount() {
             let tasks=Object.entries(this.tasks)
             if(tasks.length===0) await this.$store.dispatch('tasks/fetch')
-            this.getProjectTasks()
         },
     }
+
 </script>

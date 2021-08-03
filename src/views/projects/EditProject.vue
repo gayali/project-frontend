@@ -2,7 +2,20 @@
     <CRow>
         <CCol col="12" xl="8">
             <CCard>
-                <CForm @submit.prevent="submit">
+                  <CForm @submit.prevent="submit">
+                  <CCardHeader>
+                    <CButton variant="outline" color="dark" type="button" @click="$router.go(-1)"
+                        v-c-tooltip.hover="'Back'">
+                        <CIcon name="cilArrowLeft" />
+                    </CButton>
+
+                    <div class="alert alert-danger col-6 mx-auto" role="alert" v-if="editProjectError !== ''">
+                        {{ editProjectError }}</div>
+
+                    <CButton color="primary" class="col-4 col-md-2 col-lg-2 float-right" :disabled="loading" type="submit">
+                        <CSpinner v-if="loading" color="light" size="sm" /> Edit</CButton>
+                </CCardHeader>
+              
                     <CCardBody>
                         <CInput placeholder="Enter Project Name" label="Project Name" autocomplete="Project Name"
                             aria-label="Project Name" name="projectName" @focus="resetError" type="text"
@@ -14,22 +27,6 @@
                         <vue-editor v-model="projectDescription" :editorToolbar="customToolbar" required></vue-editor>
 
                     </CCardBody>
-                    <CCardFooter>
-                        <CRow>
-                            <div class="alert alert-danger col-12" role="alert" v-if="newProjectError !== ''">
-                                {{ newProjectError }}</div>
-                            <CCol col="6" class="text-left">
-
-                                <CButton color="dark" class="px-4" type="button" @click="$router.go(-1)"> Back</CButton>
-
-
-                            </CCol>
-                            <CCol col="6" class="text-right">
-                                <CButton color="primary" class="px-4" :disabled="loading" type="submit">
-                                    <CSpinner v-if="loading" color="light" size="sm" /> Submit</CButton>
-                            </CCol>
-                        </CRow>
-                    </CCardFooter>
                 </CForm>
             </CCard>
         </CCol>
@@ -44,20 +41,21 @@
         VueEditor
     } from "vue2-editor"
     export default {
-        name: 'NewProject',
+        name: 'EditProject',
         components: {
             VueEditor
         },
         computed: {
             ...mapGetters({
                 loading: 'projects/loading',
-                newProjectError: 'projects/newProjectError',
+                editProjectError: 'projects/editProjectError',
             }),
         },
         data() {
             return {
-                projectName: null,
-                projectDescription: null,
+                id: this.$route.query.id,
+                projectName:  this.$route.query.projectName,
+                projectDescription:  this.$route.query.projectDescription,
                 customToolbar: [
                     ["bold", "italic", "underline"],
                     [{
@@ -71,7 +69,8 @@
         },
         methods: {
             async submit(event) {
-                await this.$store.dispatch("projects/submit", {
+                await this.$store.dispatch("projects/edit", {
+                    id:this.id,
                     project_name: this.projectName,
                     description: this.projectDescription,
                 });

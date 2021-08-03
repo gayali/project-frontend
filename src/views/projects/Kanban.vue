@@ -11,7 +11,7 @@
                     </div>
                      
                     <template v-for="task in tasks">
-                        <CCard class="task-card" v-bind:key="task.id" v-if="task.status===taskType && !taskLoading"
+                        <CCard class="task-card" v-bind:key="task.id" v-if="task.status===taskType && task.project_id==$route.query.id && !taskLoading"
                             @click="$router.push({name:'Task Details', query: { task: JSON.stringify(task) } })">
                             <CCardBody>
                                 <CRow class="mb-4">
@@ -69,7 +69,6 @@
         data() {
             return {
                 loading: false,
-                projectTask: [],
                 task: {},
                 openDetailModal: false,
                 taskTypes: TaskTypes,
@@ -78,26 +77,13 @@
         },
         filters: {
             moment: function (date) {
-              //   moment(date).format('DD/MM/YYYY');
                return moment(date).fromNow()
             }
         },
-        methods: {
-            getProjectTasks() {
-                this.loading = true
-                for (let i = 0; i < this.tasks.length; i++) {
-                    const task = this.tasks[i];
-                    if (task.project_id === parseInt(this.$route.query.id)) {
-                        this.projectTask.push(task)
-                    }
-                }
-                this.loading = false
-            },
-        },
+
         async beforeMount() {
             let tasks = Object.entries(this.tasks)
             if (tasks.length === 0) await this.$store.dispatch('tasks/fetch')
-            this.getProjectTasks()
         },
     }
 </script>
@@ -114,6 +100,7 @@
     }
 
     .task-card {
+        cursor: pointer;
         border-radius: 20px;
     }
 

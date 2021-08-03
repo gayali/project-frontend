@@ -10,12 +10,14 @@ export default {
     loading: false,
     projectsError: '',
     newProjectError: '',
+    editProjectError: '',
   },
   getters: {
     projectsError: (state) => state.projectsError,
     loading: (state) => state.loading,
     projects: (state) => state.projects,
     newProjectError: (state) => state.newProjectError,
+    editProjectError: (state) => state.editProjectError,
   },
   mutations: {
     SET_PROJECTS_ERROR(state, error) {
@@ -29,6 +31,9 @@ export default {
     },
     SET_NEW_PROJECT_ERROR(state, error) {
       state.newProjectError = error
+    },
+    SET_EDIT_PROJECT_ERROR(state, error) {
+      state.editProjectError = error
     },
   },
   actions: {
@@ -80,9 +85,11 @@ export default {
         commit('SET_LOADING', true)
         const response = await repository.newProject(payload)
         if (response.status === 200 || response.status === 201) {
-          dispatch('fetch')
+         
           alert(response.data.message)
-          location.reload()
+          dispatch('fetch')
+        
+          router.push({name:'Dashboard'})
         } else {
           commit('SET_NEW_PROJECT_ERROR', response.data.message)
         }
@@ -94,10 +101,59 @@ export default {
         commit('SET_LOADING', false)
       }
     },
+    async edit({
+      commit,
+      state,
+      dispatch
+    }, payload) {
+      try {
+        commit('SET_LOADING', true)
+        const response = await repository.editProject(payload)
+        if (response.status === 200 || response.status === 201) {
+          dispatch('fetch')
+        
+          router.push({name:'Dashboard'})
+          alert(response.data.message)
+        } else {
+          commit('SET_NEW_PROJECT_ERROR', response.data.message)
+        }
+        commit('SET_LOADING', false)
+      } catch (e) {
+        console.log(e)
+        console.log(e.response)
+        commit('SET_NEW_PROJECT_ERROR', e.response.data.message)
+        commit('SET_LOADING', false)
+      }
+    },
+
+    async delete({
+      commit,
+      state,
+      dispatch
+    }, payload) {
+      try {
+        commit('SET_LOADING', true)
+        const response = await repository.deleteProject(payload)
+        alert(response.data.message)
+        if (response.status === 200 || response.status === 201)  {
+          dispatch('fetch')
+         
+          router.push({name:'Dashboard'})
+        }
+        commit('SET_LOADING', false)
+      } catch (e) {
+        commit('SET_LOADING', false)
+        console.log(e)
+        console.log(e.response)
+        alert(response.data.message)
+  
+      }
+    },
     async resetError({
       commit
     }) {
       commit('SET_NEW_PROJECT_ERROR', '')
+      commit('SET_EDIT_PROJECT_ERROR', '')
     },
   },
   namespaced: true

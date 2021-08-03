@@ -50,7 +50,6 @@ export default {
                 commit('SET_LOADING', true)
                 const response = await repository.getTaskComments(payload)
                 if (response.status === 200 || response.status === 201) {
-                    console.log(response.data)
                     commit('SET_TASK_COMMENTS', response.data.taskComments)
                 } else {
                     commit('SET_TASK_COMMENTS_ERROR', response.data.message)

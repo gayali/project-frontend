@@ -51,6 +51,11 @@
       this.setSidebar()
 
     },
+    watch: {
+      projects(){
+        this.setSidebar()
+      }
+    },
     methods: {
       setSidebar() {
         try {

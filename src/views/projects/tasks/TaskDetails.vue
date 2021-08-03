@@ -41,7 +41,19 @@
                     </CRow>
 
                 </CCardBody>
+                
             </CForm>
+            <CCardFooter>
+                <CRow>
+
+                       <CCol col="12" class="text-right">
+                            <CButton color="danger" class="px-4 btn-sm" type="button" :disabled="loading"
+                                @click="deleteTask">
+                                  <CSpinner v-if="loading" color="light" size="sm" />
+                                Delete Task</CButton>
+                        </CCol>
+                </CRow>
+            </CCardFooter>
         </CCard>
         <TaskComment :taskId="task.id"></TaskComment>
     </div>
@@ -106,6 +118,12 @@
             async resetError(event) {
                 await this.$store.dispatch('tasks/resetError')
             },
+             async deleteTask() {
+                let yesDelete = confirm(
+                    'This will delete task records and all comments regarding. \nAre you sure to delete ?'
+                    )
+                if (yesDelete) await this.$store.dispatch('tasks/delete', {id:this.task.id})
+            }
         },
         async beforeMount() {
             let users = Object.entries(this.users)

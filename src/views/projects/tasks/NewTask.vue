@@ -108,5 +108,12 @@
             if(users.length===0) await this.$store.dispatch('users/fetchAll')
             this.fetchUser()
         },
+         watch: {
+           '$route.query': {
+                handler(oldUrl, newUrl) {
+                      this.project_id=this.$route.query.id
+                }
+            }
+        }
     }
 </script>

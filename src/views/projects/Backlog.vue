@@ -45,7 +45,7 @@
                 let tasks = Object.entries(this.tasks)
                 if (tasks.length !== 0) {
                     return this.tasks.filter((task) => {
-                        return (task.status === TaskTypes.BACKLOG)
+                        return (task.project_id == this.$route.query.id && task.status === TaskTypes.BACKLOG)
                     })
                 }
 
@@ -54,26 +54,13 @@
         data() {
             return {
                 loading: false,
-                projectTask: [],
                 openDetailModal: false
             };
-        },
-        methods: {
-            getProjectTasks() {
-                this.loading = true
-                for (let i = 0; i < this.tasks.length; i++) {
-                    const task = this.tasks[i];
-                    if (task.project_id === parseInt(this.$route.query.id)) {
-                        this.projectTask.push(task)
-                    }
-                }
-                this.loading = false
-            },
         },
         async beforeMount() {
             let tasks=Object.entries(this.tasks)
             if(tasks.length===0) await this.$store.dispatch('tasks/fetch')
-            this.getProjectTasks()
         },
+      
     }
 </script>

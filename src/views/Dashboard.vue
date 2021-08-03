@@ -15,7 +15,7 @@
                     <CCallout color="danger">
                       <small class="text-muted">Total Projects</small><br>
                       <CSpinner v-if="calculateLoading" color="dark" size="lg" class="mx-auto" />
-                      <strong class="h4">{{totalProjects}}</strong>
+                      <strong class="h4">{{totalProjects||0}}</strong>
                     </CCallout>
                   </CCol>
                   <CCol sm="6">
@@ -77,8 +77,6 @@
         tasks: 'tasks/tasks',
       }),
       totalProjects() {
-        this.calculateLoading = true
-        this.calculateLoading = false
         return this.projects.length
       },
       totalBacklogs() {
