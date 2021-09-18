@@ -39,8 +39,6 @@ import {
     actions: {
       async fetch({
         commit,
-        state,
-        dispatch
       }) {
         try {
           commit('SET_LOADING', true)
@@ -78,7 +76,6 @@ import {
   
       async submit({
         commit,
-        state,
         dispatch
       }, payload) {
         try {
@@ -108,7 +105,6 @@ import {
       
       async edit({
         commit,
-        state,
         dispatch
       }, payload) {
         try {
@@ -133,7 +129,6 @@ import {
 
       async delete({
         commit,
-        state,
         dispatch
       }, payload) {
         try {
@@ -149,7 +144,7 @@ import {
           commit('SET_LOADING', false)
           console.log(e)
           console.log(e.response)
-          alert(response.data.message)
+          alert(e.response.data.message)
       
         }
       },

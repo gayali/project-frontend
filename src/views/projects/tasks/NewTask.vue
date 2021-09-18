@@ -87,10 +87,10 @@
             };
         },
         methods: {
-            async submit(event) {
+            async submit() {
                 await this.$store.dispatch('tasks/submit', this.task);
             },
-            async resetError(event) {
+            async resetError() {
                 await this.$store.dispatch('tasks/resetError')
             },
             fetchUser() {
@@ -110,7 +110,7 @@
         },
          watch: {
            '$route.query': {
-                handler(oldUrl, newUrl) {
+                handler() {
                       this.project_id=this.$route.query.id
                 }
             }
