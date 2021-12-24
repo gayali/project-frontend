@@ -22,9 +22,23 @@
                                     placeholder="Please select" name="assignee_user_id" />
                             </CCol>
                         </CRow>
+                         <CRow>
+                            <CCol col="6">
+                                 <CInput placeholder="Enter Start Date" label="Start Date (if any)" autocomplete="Start Date"
+                                    aria-label="Start Date" name="start_date" @focus="resetError" type="date"
+                                    v-model="task.start_date">
+                                </CInput>
+                            </CCol>
+                            <CCol col="6">
+                                 <CInput placeholder="Enter End Date" label="End Date" autocomplete="End Date"
+                                    aria-label="End Date" name="end_date" @focus="resetError" type="date"
+                                    v-model="task.end_date">
+                                </CInput>
+                            </CCol>
+                        </CRow>
 
                         <div class="mb-2">Task Description</div>
-                        <vue-editor v-model="task.description" :editorToolbar="customToolbar" required></vue-editor>
+                        <vue-editor v-model="task.description" :editorToolbar="customToolbar" ></vue-editor>
 
                     </CCardBody>
                     <CCardFooter>
@@ -73,6 +87,8 @@
                     project_id: parseInt(this.$route.query.id),
                     reporter_user_id: 1,
                     assignee_user_id: 1,
+                    start_date: null,
+                    end_date: null
                 },
                 options: [],
                 customToolbar: [

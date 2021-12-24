@@ -15,13 +15,10 @@
     </CHeaderBrand>
     <CHeaderNav class="d-md-down-none mr-auto">
       <CHeaderNavItem class="px-3">
-        <CHeaderNavLink to="/dashboard">
-          Dashboard
-        </CHeaderNavLink>
+         <span  class="mr-1">Project Management System</span>
       </CHeaderNavItem>
     </CHeaderNav>
     <CHeaderNav class="mr-4">
-      
       <TheHeaderDropdownAccnt/>
     </CHeaderNav>
     <CSubheader class="px-3">
@@ -39,10 +36,10 @@ export default {
     TheHeaderDropdownAccnt
   },
    methods: {
-      setToggleSidebarMobile(event) {
+      setToggleSidebarMobile() {
        this.$store.dispatch('sidebar/setToggleSidebarMobile')
       },
-      setToggleSidebarDesktop(event) {
+      setToggleSidebarDesktop() {
        this.$store.dispatch('sidebar/setToggleSidebarDesktop')
       },
      

@@ -5,28 +5,32 @@
                 <CCardHeader class="text-center">
                     <h6 class="m-0"><strong>{{taskType}}</strong></h6>
                 </CCardHeader>
-                <CCardBody class="px-2">
-                    <div class="text-center m-4" >
-                         <CSpinner  v-if="taskLoading" color="primary " size="lg" />
+                <CCardBody class="px-2 py-1">
+                    <div class="text-center m-4" v-if="taskLoading" >
+                         <CSpinner  color="primary " size="lg" />
                     </div>
                      
                     <template v-for="task in tasks">
-                        <CCard class="task-card" v-bind:key="task.id" v-if="task.status===taskType && task.project_id==$route.query.id && !taskLoading"
+                        <CCard class="my-2 task-card" v-bind:key="task.id" v-if="task.status===taskType && task.project_id==$route.query.id && !taskLoading"
                             @click="$router.push({name:'Task Details', query: { task: JSON.stringify(task) } })">
                             <CCardBody>
-                                <CRow class="mb-4">
-                                    <CCol col="12">
-                                        <CBadge color="primary">{{task.branch_name}}</CBadge>
+                                <CRow>
+                                    <CCol col="2">
+                                        <CBadge color="primary" size="sm">{{task.branch_name}}</CBadge>
                                     </CCol>
-                                    <CCol col="12">{{task.task_title}}</CCol>
+                                    
+                                     <CCol col="10" class="text-right" v-if="task.status===taskTypes.BACKLOG || task.status===taskTypes.TODO || task.status===taskTypes.DOING">
+                                         <CBadge color="tertiary" >
+                                       <CIcon name="cilCalendar"  class="icon-bal mr-1" size="sm" />
+                                        END : {{task.end_date|moment }}
+                                         </CBadge>
+                                    </CCol>
+                                </CRow>
+                                <CRow class="mt-2">
+                                     <CCol col="12">{{task.task_title}}</CCol>
                                 </CRow>
                                 <CRow>
-                                    <CCol col="9">
-                                        <CIcon name="cilCalendar" class="icon-bal mr-1" />
-                                        {{task.updated_at|moment }}
-                                    </CCol>
-
-                                    <CCol col="3" class="text-right">
+                                    <CCol col="12" class="text-right">
                                         <avatar :username="task.asignee_user.name" :size="30" style="float:right"
                                             v-c-tooltip.hover="task.asignee_user.name">
                                         </avatar>
@@ -45,19 +49,15 @@
 </template>
 
 <script>
-    import Modal from '../components/Modal.vue'
     import {
         mapGetters
     } from "vuex"
-    import TaskDetails from './tasks/TaskDetails'
     import TaskTypes from '../../enums/taskTypes'
     import Avatar from 'vue-avatar'
     import moment from 'moment'
     export default {
         name: 'Kanban',
         components: {
-            TaskDetails,
-            Modal,
             Avatar
         },
         computed: {
@@ -79,6 +79,7 @@
             moment: function (date) {
                return moment(date).fromNow()
             }
+
         },
 
         async beforeMount() {
@@ -101,7 +102,7 @@
 
     .task-card {
         cursor: pointer;
-        border-radius: 20px;
+        border-radius: 15px;
     }
 
     .icon-bal {

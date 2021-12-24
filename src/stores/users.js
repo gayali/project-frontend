@@ -67,9 +67,7 @@ export default {
   },
   actions: {
     async fetch({
-      commit,
-      state,
-      dispatch
+      commit
     }) {
 
       if (
@@ -86,7 +84,7 @@ export default {
     },
     setIsLoggedIn({
       commit
-    }, status) {
+    }) {
       commit('IS_LOGGED_IN', true)
     },
     setLoginData({
@@ -163,7 +161,6 @@ export default {
       commit('SET_USERS', payload)
     },
     async fetchUserDetails({
-      commit,
       dispatch
     }) {
       try {
@@ -177,8 +174,7 @@ export default {
       }
     },
     async fetchAll({
-      commit,
-      dispatch
+      commit
     }) {
       try {
         const response = await repository.fetchAll()
@@ -191,14 +187,12 @@ export default {
       }
     },
     set_new_user_error({
-      commit,
-      dispatch
+      commit
     }, payload) {
       commit('SET_NEW_USER_ERROR', payload)
     },
     set_edit_user_error({
-      commit,
-      dispatch
+      commit
     }, payload) {
       commit('SET_EDIT_USER_ERROR', payload)
     },
@@ -257,10 +251,9 @@ export default {
     },
 
     async canAccess({
-      commit,
       state,
       dispatch
-    }, payload) {
+    }, ) {
       try {
         let user=Object.entries(state.user)
         if (user.length === 0)  await dispatch('fetchUserDetails')
