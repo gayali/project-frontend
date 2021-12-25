@@ -33,6 +33,7 @@
                                  <CInput placeholder="Enter End Date" label="End Date" autocomplete="End Date"
                                     aria-label="End Date" name="end_date" @focus="resetError" type="date"
                                     v-model="task.end_date">
+                                    
                                 </CInput>
                             </CCol>
                         </CRow>
