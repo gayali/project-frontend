@@ -2,71 +2,76 @@ import {
     RepositoryFactory
   } from '@/api/repositoryFactory'
   import router from '../js/router'
-  const repository = RepositoryFactory.get('tasks')
+  const repository = RepositoryFactory.get('sprints')
   
   export default {
     state: {
-      tasks: [],
+      sprints: [],
       loading: false,
-      tasksError: '',
-      newTaskError: '',
-      editTaskError:''
+      sprintsError: '',
+      newSprintError: '',
+      editSprintError: '',
+      selectedSprint:{}
     },
     getters: {
-      tasksError: (state) => state.tasksError,
+      sprintsError: (state) => state.sprintsError,
       loading: (state) => state.loading,
-      tasks: (state) => state.tasks,
-      newTaskError: (state) => state.newTaskError,
-      editTaskError: (state) => state.editTaskError,
+      sprints: (state) => state.sprints,
+      newSprintError: (state) => state.newSprintError,
+      editSprintError: (state) => state.editSprintError,
+      selectedSprint: (state) => state.selectedSprint,
     },
     mutations: {
-      SET_TASKS_ERROR(state, error) {
-        state.projectsError = error
+      SET_SPRINTS_ERROR(state, error) {
+        state.sprintsError = error
       },
       SET_LOADING(state, boolean) {
         state.loading = boolean
       },
-      SET_TASKS(state, payload) {
-        state.tasks = payload
+      SET_SPRINTS(state, payload) {
+        state.sprints = payload
       },
-      SET_NEW_TASK_ERROR(state, error) {
-        state.newTaskError = error
+      SET_NEW_SPRINT_ERROR(state, error) {
+        state.newSprintError = error
       },
-      SET_EDIT_TASK_ERROR(state, error) {
-        state.editTaskError = error
+      SET_EDIT_SPRINT_ERROR(state, error) {
+        state.editSprintError = error
+      },
+      SET_SELECTED_SPRINT(state, paylaod) {
+        state.selectedSprint = paylaod
       },
     },
     actions: {
       async fetch({
-        commit,
+        commit
       }) {
         try {
           commit('SET_LOADING', true)
-          const response = await repository.getTasks()
+          const response = await repository.getSprints()
           if (response.status === 200 || response.status === 201) {
   
-            commit('SET_TASKS', response.data.tasks)
+            commit('SET_SPRINTS', response.data.sprints)
           } else {
-            commit('SET_TASKS_ERROR', response.data.message)
+            commit('SET_SPRINTS_ERROR', response.data.message)
           }
           commit('SET_LOADING', false)
         } catch (e) {
           console.log(e)
           console.log(e.response)
-          commit('SET_TASKS_ERROR', e.response.data.message)
+          commit('SET_SPRINTS_ERROR', e.response.data.message)
           commit('SET_LOADING', false)
         }
       },
   
-      setTasks({
+      setSprints({
         commit
       }, payload) {
-        commit('SET_TASKS', payload)
+        commit('SET_SPRINTS', payload)
       },
-      setTasksError({
+      setSprintsError({
         commit
       }, payload) {
-        commit('SET_TASKS_ERROR', payload)
+        commit('SET_SPRINTS_ERROR', payload)
       },
       setLoading({
         commit
@@ -80,64 +85,56 @@ import {
       }, payload) {
         try {
           commit('SET_LOADING', true)
-          const response = await repository.newTask(payload)
-          if (response.status === 200 || response.status === 201) {
-            dispatch('fetch')
+          const response = await repository.newSprint(payload)
+          if (response.status === 200 || response.status === 201) {           
             alert(response.data.message)
+            dispatch('fetch')          
             router.push({name:'Dashboard'})
           } else {
-            commit('SET_NEW_TASK_ERROR', response.data.message)
+            commit('SET_NEW_SPRINT_ERROR', response.data.message)
           }
           commit('SET_LOADING', false)
         } catch (e) {
           commit('SET_LOADING', false)
           console.log(e)
           console.log(e.response)
-          commit('SET_NEW_TASK_ERROR', e.response.data.message)
-   
+          commit('SET_NEW_SPRINT_ERROR', e.response.data.message)
         }
       },
-      async resetError({
-        commit
-      }) {
-        commit('SET_NEW_TASK_ERROR', '')
-        commit('SET_EDIT_TASK_ERROR', '')
-      },
-      
       async edit({
         commit,
         dispatch
       }, payload) {
         try {
           commit('SET_LOADING', true)
-          const response = await repository.editTask(payload.id,payload)
+          const response = await repository.editSprint(payload)
           if (response.status === 200 || response.status === 201) {
             dispatch('fetch')
-            alert(response.data.message)
             router.push({name:'Dashboard'})
+            alert(response.data.message)
           } else {
-            commit('SET_EDIT_TASK_ERROR', response.data.message)
+            commit('SET_NEW_SPRINT_ERROR', response.data.message)
           }
           commit('SET_LOADING', false)
         } catch (e) {
-          commit('SET_LOADING', false)
           console.log(e)
           console.log(e.response)
-          commit('SET_EDIT_TASK_ERROR', e.response.data.message)
-     
+          commit('SET_NEW_SPRINT_ERROR', e.response.data.message)
+          commit('SET_LOADING', false)
         }
       },
-
+  
       async delete({
         commit,
         dispatch
       }, payload) {
         try {
           commit('SET_LOADING', true)
-          const response = await repository.deleteTask(payload)
+          const response = await repository.deleteSprint(payload)
           alert(response.data.message)
           if (response.status === 200 || response.status === 201)  {
             dispatch('fetch')
+           
             router.push({name:'Dashboard'})
           }
           commit('SET_LOADING', false)
@@ -146,8 +143,19 @@ import {
           console.log(e)
           console.log(e.response)
           alert(e.response.data.message)
-      
+    
         }
+      },
+      async resetError({
+        commit
+      }) {
+        commit('SET_NEW_SPRINT_ERROR', '')
+        commit('SET_EDIT_SPRINT_ERROR', '')
+      },
+      async setSelectedSprint({
+        commit
+      },payload) {
+        commit('SET_SELECTED_SPRINT', payload)
       },
     },
     namespaced: true

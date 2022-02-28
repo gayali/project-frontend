@@ -2,7 +2,7 @@
     <div>
         <CRow>
             <CCol col="12" xl="8">
-                <Table :items="usersData" :fields="fields" @open="setClickedUser">
+                <Table :items="usersData" :fields="fields" :showDelete="true" @delete="deleteUser" @open="setClickedUser">
                     <template #header>
                         <CIcon name="cil-grid" /> User Table
                     </template>
@@ -48,7 +48,7 @@
                     const userOneData = {
                         'Name': user.name,
                         'Email': user.email,
-                        'action': user,
+                        'Action': user,
                         'Role': roleName
                     }
                     userData.push(userOneData)
@@ -73,6 +73,12 @@
                 this.openDetailModal = false
                 this.user = {}
             },
+            deleteUser(user){
+                let agree= confirm('Are you sure to delete user ?');
+                if(agree){
+                    this.$store.dispatch('users/deleteUser',user)
+                }
+            }
 
         },
         async beforeMount() {

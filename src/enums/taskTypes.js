@@ -9,7 +9,7 @@ const ARCHIVE = 'Archive'
 const PRODUCTION = 'Production'
 const FINISHED = 'Finished'
 export const allTypes = [BACKLOG, TODO, DOING, READYFORREVIEW, DEV, TEST, STAGING, ARCHIVE, PRODUCTION, FINISHED]
-export const allKanbanTypes = [BACKLOG, TODO, DOING, READYFORREVIEW, DEV, TEST, STAGING, ARCHIVE, PRODUCTION]
+export const allKanbanTypes = [TODO, DOING, READYFORREVIEW, DEV, TEST, STAGING, ARCHIVE, PRODUCTION]
 export {
     BACKLOG,
     TODO,

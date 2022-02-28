@@ -28,6 +28,9 @@ const Kanban = () => import('@/views/projects/Kanban')
 const NewTask = () => import('@/views/projects/tasks/NewTask')
 const TaskDetails = () => import('@/views/projects/tasks/TaskDetails')
 
+const NewSprint = () => import('@/views/projects/sprints/NewSprint')
+const EditSprint = () => import('@/views/projects/sprints/EditSprint')
+
 const router = new Router({
   mode: 'history', // https://router.vuejs.org/api/#mode
   linkActiveClass: 'active',
@@ -76,6 +79,16 @@ function configRoutes() {
             }
           },
           children: getUsers()
+        },
+        {
+          path: 'sprint',
+          name: 'Sprint',
+          component: {
+            render(c) {
+              return c('router-view')
+            }
+          },
+          children: getSprints()
         },
       ]
     },
@@ -159,6 +172,21 @@ function getUsers() {
     }
   ]
 }
+
+function getSprints() {
+  return [{
+      path: 'newSprint',
+      name: 'New Sprint',
+      component: NewSprint
+    },
+    {
+      path: 'editSprint',
+      name: 'Edit Sprint',
+      component: EditSprint
+    }
+  ]
+}
+
 
 router.beforeEach((to, from, next) => {
   if (auth.isAuthenticated()) {

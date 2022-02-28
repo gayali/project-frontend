@@ -68,14 +68,14 @@
             };
         },
         methods: {
-            async submit(event) {
+            async submit() {
                 await this.$store.dispatch("projects/edit", {
                     id:this.id,
                     project_name: this.projectName,
                     description: this.projectDescription,
                 });
             },
-            async resetError(event) {
+            async resetError() {
                 await this.$store.dispatch("projects/resetError");
             },
         },

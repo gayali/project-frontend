@@ -10,7 +10,8 @@
         :fields="fields" :items-per-page="small ? 10 : 5" :dark="dark" pagination>
         <template #Action="{item}">
           <td>
-            <CButton color="primary" class="px-4" type="button" @click="open(item)">Edit</CButton>
+            <CButton size="sm" color="primary" class="px-4" type="button" @click="$emit('open', item)">Edit</CButton>
+            <CButton v-if="showDelete" size="sm" color="danger" class="px-4 m-1" type="button" @click="$emit('delete', item)">Delete</CButton>
           </td>
         </template>
       </CDataTable>
@@ -38,12 +39,11 @@
       border: Boolean,
       small: Boolean,
       fixed: Boolean,
-      dark: Boolean
-    },
-    methods: {
-      open(item) {
-        this.$emit('open', item)
-      }
+      dark: Boolean,
+       showDelete: {
+        type: Boolean,
+        default : false
+      },
     }
   }
 </script>

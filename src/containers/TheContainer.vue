@@ -4,15 +4,15 @@
     <CWrapper>
       <TheHeader/>
       <div class="c-body">
-        <main class="c-main">
-          <CContainer fluid>
+        <main class="c-main py-0">
+          <CContainer fluid class="px-2">
             <transition name="fade" mode="out-in">
               <router-view :key="$route.path"></router-view>
             </transition>
           </CContainer>
         </main>
       </div>
-      <TheFooter/>
+      <TheFooter v-if="$route.name!=='Kanban'"/>
     </CWrapper>
   </div>
 </template>

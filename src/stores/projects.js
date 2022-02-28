@@ -11,6 +11,7 @@ export default {
     projectsError: '',
     newProjectError: '',
     editProjectError: '',
+    selectedProject:{}
   },
   getters: {
     projectsError: (state) => state.projectsError,
@@ -18,6 +19,7 @@ export default {
     projects: (state) => state.projects,
     newProjectError: (state) => state.newProjectError,
     editProjectError: (state) => state.editProjectError,
+    selectedProject: (state) => state.selectedProject,
   },
   mutations: {
     SET_PROJECTS_ERROR(state, error) {
@@ -35,12 +37,13 @@ export default {
     SET_EDIT_PROJECT_ERROR(state, error) {
       state.editProjectError = error
     },
+    SET_SELECTED_PROJECT(state, payload) {
+      state.selectedProject = payload
+    },
   },
   actions: {
     async fetch({
-      commit,
-      state,
-      dispatch
+      commit
     }) {
       try {
         commit('SET_LOADING', true)
@@ -78,7 +81,6 @@ export default {
 
     async submit({
       commit,
-      state,
       dispatch
     }, payload) {
       try {
@@ -103,7 +105,6 @@ export default {
     },
     async edit({
       commit,
-      state,
       dispatch
     }, payload) {
       try {
@@ -128,7 +129,6 @@ export default {
 
     async delete({
       commit,
-      state,
       dispatch
     }, payload) {
       try {
@@ -145,7 +145,7 @@ export default {
         commit('SET_LOADING', false)
         console.log(e)
         console.log(e.response)
-        alert(response.data.message)
+        alert(e.response.data.message)
   
       }
     },
@@ -155,6 +155,15 @@ export default {
       commit('SET_NEW_PROJECT_ERROR', '')
       commit('SET_EDIT_PROJECT_ERROR', '')
     },
+    updateSelectedProject({state,commit},payload){
+     let project= state.projects.find(project =>{
+       return payload.id==project.id
+      })
+      if(project){
+          commit('SET_SELECTED_PROJECT',project)
+      }
+    
+    }
   },
   namespaced: true
 }
