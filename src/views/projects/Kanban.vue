@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column align-content-stretch">
+  <div class="d-flex flex-column align-content-stretch h-100">
     <div class="
         row
         align-items-center
@@ -22,7 +22,8 @@
           <select class="form-control form-control-sm col-sm-9" placeholder="Select Sprint"
             @change="selectedSprint = $event.target.value" :value="selectedSprint">
             <option value="">No Sprint</option>
-            <option v-for="sprint in filteredSprints" :key="sprint.id" :value="sprint.id">
+            <option v-for="sprint in filteredSprints" :key="sprint.id" :value="sprint.id"
+              :selected="selectedSprint && selectedSprint == sprint.id ? true:false">
               {{ sprint.name }}
             </option>
           </select>
@@ -30,7 +31,11 @@
       </div>
     </div>
     <div class="kanban-view-class">
-      <div class="d-inline-flex">
+      <div class="text-center m-4" v-if="taskLoading">
+        <CSpinner color="primary " size="lg" />
+      </div>
+
+      <div class="d-inline-flex" v-else-if="filteredTasks.length > 0">
         <CCard class="bg-section m-1" v-for="taskType in taskTypes.allKanbanTypes" v-bind:key="taskType">
           <CCardHeader class="text-center px-0 py-1">
             <h6 class="m-0">
@@ -38,9 +43,7 @@
             </h6>
           </CCardHeader>
           <CCardBody class="px-2 py-1">
-            <div class="text-center m-4" v-if="taskLoading">
-              <CSpinner color="primary " size="lg" />
-            </div>
+
 
             <template v-for="task in filteredTasks">
               <CCard class="my-2 task-card" v-bind:key="task.id" v-if="task.status === taskType && !taskLoading" @click="
@@ -78,8 +81,14 @@
                 </CCardBody>
               </CCard>
             </template>
+
+
           </CCardBody>
         </CCard>
+      </div>
+
+      <div v-else class="text-center m-4 w-100 font-weight-bold">
+        No Task Found
       </div>
     </div>
   </div>
@@ -109,20 +118,21 @@ export default {
       });
     },
     filteredTasks() {
-      return this.tasks.filter((task) => {
+      let filteredTasks = []
+      filteredTasks = this.tasks.filter((task) => {
         if (this.selectedSprint) {
           return (
-            (this.selectedSprint === task.sprint_id) &&
+            (this.selectedSprint == task.sprint_id) &&
             task.project_id.toString() === this.$route.query.id
           );
         } else {
-          return(
-            (task.sprint_id === null || task.sprint_id === ''|| task.sprint_id === 'null') &&
+          return (
+            (task.sprint_id === null || task.sprint_id === '' || task.sprint_id === 'null') &&
             task.project_id.toString() === this.$route.query.id
           )
         }
-
       });
+      return filteredTasks
     },
   },
   data() {
@@ -138,8 +148,13 @@ export default {
     if (Object.entries(this.tasks).length === 0)
       await this.$store.dispatch("tasks/fetch");
 
-    if (Object.entries(this.sprints).length === 0)
       await this.$store.dispatch("sprints/fetch");
+      this.selectedSprint = this.sprints.find((sprint) => {
+        return (
+          sprint.project_id == this.$route.query.id
+          && sprint.is_active == 1
+        );
+      }).id;
 
     if (Object.entries(this.projects).length === 0)
       await this.$store.dispatch("projects/fetch");
@@ -150,9 +165,7 @@ export default {
   },
   methods: {
     moment(startDate, endDate) {
-      
-      console.log('startDate',startDate)
-      console.log('endDate',endDate)
+
       if (startDate !== null && endDate !== null) {
         let start = moment(startDate, "YYYY-MM-DD");
         let end = moment(endDate, "YYYY-MM-DD").add(1, 'days');

@@ -52,8 +52,6 @@ export default {
                     return (task.project_id == this.$route.query.id && task.status === TaskTypes.BACKLOG)
                 })
             }
-            console.log('backLogTask.length', backLogTask.length);
-            console.log('backLogTask', backLogTask);
             return backLogTask
         }
     },

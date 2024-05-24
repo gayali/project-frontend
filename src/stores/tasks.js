@@ -65,10 +65,7 @@ import {
           commit('SET_LOADING', true)
           const response = await repository.oneTask(state.selectedTaskBranchName)
           if (response.status === 200 || response.status === 201) {
-            
             commit('SET_SELECTED_TASK', response.data.task)
-           
-            console.log('state.selectedTask',state.selectedTask)
           } else {
             commit('SET_SELECTED_TASK_ERROR', response.data.message)
           }
