@@ -27,7 +27,11 @@ export default {
     user: (state) => state.user,
     users: (state) => state.users,
     newUserError: (state) => state.newUserError,
-    editUserError: (state) => state.editUserError
+    editUserError: (state) => state.editUserError,
+    isAdmin(state) {
+      if (state.user && state.user.roles && state.user.roles[0].name === Roles.ADMIN) return true;
+      return false;
+    },
   },
   mutations: {
     SET_NEW_USER_ERROR(state, payload) {

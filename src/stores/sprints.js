@@ -10,8 +10,7 @@ import {
       loading: false,
       sprintsError: '',
       newSprintError: '',
-      editSprintError: '',
-      selectedSprint:{}
+      editSprintError: ''
     },
     getters: {
       sprintsError: (state) => state.sprintsError,
@@ -19,7 +18,6 @@ import {
       sprints: (state) => state.sprints,
       newSprintError: (state) => state.newSprintError,
       editSprintError: (state) => state.editSprintError,
-      selectedSprint: (state) => state.selectedSprint,
     },
     mutations: {
       SET_SPRINTS_ERROR(state, error) {
@@ -36,10 +34,7 @@ import {
       },
       SET_EDIT_SPRINT_ERROR(state, error) {
         state.editSprintError = error
-      },
-      SET_SELECTED_SPRINT(state, paylaod) {
-        state.selectedSprint = paylaod
-      },
+      }
     },
     actions: {
       async fetch({
@@ -101,16 +96,36 @@ import {
           commit('SET_NEW_SPRINT_ERROR', e.response.data.message)
         }
       },
-      async edit({
+      async activate({
         commit,
         dispatch
       }, payload) {
         try {
           commit('SET_LOADING', true)
-          const response = await repository.editSprint(payload)
+          const response = await repository.activateSprint(payload)
+          alert(response.data.message)
+          if (response.status === 200 || response.status === 201)  {
+            dispatch('fetch')
+            alert(response.data.message)
+          }
+          commit('SET_LOADING', false)
+        } catch (e) {
+          commit('SET_LOADING', false)
+          console.log(e)
+          console.log(e.response)
+          alert(e.response.data.message)
+    
+        }
+      },
+      async renameSprint({
+        commit,
+        dispatch
+      }, payload) {
+        try {
+          commit('SET_LOADING', true)
+          const response = await repository.renameSprint(payload.sprint.id,{name:payload.sprintName})
           if (response.status === 200 || response.status === 201) {
             dispatch('fetch')
-            router.push({name:'Dashboard'})
             alert(response.data.message)
           } else {
             commit('SET_NEW_SPRINT_ERROR', response.data.message)
@@ -124,7 +139,7 @@ import {
         }
       },
   
-      async delete({
+      async deleteSprint({
         commit,
         dispatch
       }, payload) {
@@ -134,8 +149,7 @@ import {
           alert(response.data.message)
           if (response.status === 200 || response.status === 201)  {
             dispatch('fetch')
-           
-            router.push({name:'Dashboard'})
+            alert(e.response.data.message)
           }
           commit('SET_LOADING', false)
         } catch (e) {
@@ -146,16 +160,12 @@ import {
     
         }
       },
+    
       async resetError({
         commit
       }) {
         commit('SET_NEW_SPRINT_ERROR', '')
         commit('SET_EDIT_SPRINT_ERROR', '')
-      },
-      async setSelectedSprint({
-        commit
-      },payload) {
-        commit('SET_SELECTED_SPRINT', payload)
       },
     },
     namespaced: true

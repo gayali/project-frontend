@@ -1,6 +1,7 @@
 import {
     RepositoryFactory
 } from '@/api/repositoryFactory'
+import router from '../js/router'
 const repository = RepositoryFactory.get('taskComments')
 
 export default {
@@ -99,7 +100,8 @@ export default {
                 const response = await repository.newTaskComment(payload)
                 if (response.status === 200 || response.status === 201) {
                     dispatch('fetch',{task_id:payload.task_id})
-
+                    alert(response.data.message)
+                    router.push({name:'Dashboard'})
                 } else {
                     commit('SET_NEW_TASK_COMMENTS_ERROR', response.data.message)
                 }

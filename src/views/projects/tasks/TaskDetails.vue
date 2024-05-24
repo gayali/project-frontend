@@ -1,146 +1,104 @@
 <template>
   <div>
-    <CCard>
-      <CForm @submit.prevent="edit">
-        <CCardHeader>
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-              <CButton
-                class="mr-2"
-                variant="outline"
-                color="dark"
-                type="button"
-                size="sm"
-                @click="$router.go(-1)"
-                v-c-tooltip.hover="'Back'"
-              >
-                <CIcon name="cilArrowLeft" />
-              </CButton>
-              <div class="h5 mb-0">{{ task.task_title }}</div>
+    <CCard v-if="loading">
+      <CCardBody class="d-flex justify-content-center align-items-center" style="gap:1rem;">
+        <CSpinner color="dark" size="lg" />
+        <div>Loading</div>
+      </CCardBody>
+    </CCard>
+    <CCard v-else-if="task">
+
+      <CCardHeader>
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center">
+            <CButton class="mr-2" variant="outline" color="dark" type="button" size="sm" @click="$router.go(-1)"
+              v-c-tooltip.hover="'Back'">
+              <CIcon name="cilArrowLeft" />
+            </CButton>
+            <div class="h5 mb-0">{{ task.task_title }}</div>
+          </div>
+
+          <CDropdown>
+            <template #toggler>
+              <CHeaderNavLink>
+                <CIcon name="cil-options" />
+              </CHeaderNavLink>
+            </template>
+            <CDropdownItem @click="$router.push({name:'Edit Task',query:{task:task.branch_name}})">
+              <CIcon name="cilPencil" class="mr-2" /> Edit Task
+            </CDropdownItem>
+            <CDropdownItem @click="deleteTask">
+              <CIcon name="cilTrash" class="mr-2" /> Delete Task
+            </CDropdownItem>
+
+          </CDropdown>
+        </div>
+
+
+      </CCardHeader>
+      <CCardBody>
+        <CRow class="mb-4">
+          <CCol col="12" sm="12" md="4" xl="4">
+            <CListGroup>
+              <CListGroupItem class="d-flex justify-content-between align-items-center">
+                <strong> Status</strong>
+                <CBadge color="light" shape="pill" class="p-2">{{ task.status }}</CBadge>
+              </CListGroupItem>
+              <CListGroupItem class="d-flex justify-content-between align-items-center">
+                <strong> Sprint</strong>
+                <CBadge color="light" shape="pill" class="p-2">{{ task.sprint ? task.sprint.name : 'Not Assigned' }}
+                </CBadge>
+              </CListGroupItem>
+              <CListGroupItem class="d-flex justify-content-between align-items-center">
+                <strong> Reporter</strong>
+                {{ task.reporter_user ? task.reporter_user.name : 'Not Assigned' }}
+              </CListGroupItem>
+              <CListGroupItem class="d-flex justify-content-between align-items-center">
+                <strong> Assinee</strong>
+                {{ task.asignee_user ? task.asignee_user.name : 'Not Assigned' }}
+              </CListGroupItem>
+
+              <CListGroupItem class="d-flex justify-content-between align-items-center">
+                <strong> Start Date</strong>
+                <CBadge color="light" shape="pill">{{ task.start_date ? task.start_date : 'Not Assigned' }}</CBadge>
+              </CListGroupItem>
+              <CListGroupItem class="d-flex justify-content-between align-items-center">
+                <strong> End Date</strong>
+                <CBadge color="light" shape="pill">{{ task.end_date ? task.end_date : 'Not Assigned' }}</CBadge>
+              </CListGroupItem>
+            </CListGroup>
+
+          </CCol>
+          <CCol col="12" sm="12" md="8" xl="8">
+            <h5 class="mt-3">
+              Branch Name :
+              <CBadge color="secondary" shape="pill">{{
+                task.branch_name
+              }}</CBadge>
+            </h5>
+
+            <div class="mb-2">Task Description</div>
+            <div v-if="task.description" class="border p-2 rounded mb-4" v-html="task.description" />
+
+            <div v-else class="border p-2 rounded mb-4">
+              No description provided
             </div>
 
-            <CButton
-              class="float-right"
-              color="info"
-              :disabled="loading"
-              type="submit"
-              size="sm"
-              title="Edit task"
-            >
-              <CIcon name="cilPencil"
-            /></CButton>
-          </div>
 
-          <div
-            class="alert alert-danger col-12 mx-auto"
-            role="alert"
-            v-if="editTaskError !== ''"
-          >
-            {{ editTaskError }}
-          </div>
-        </CCardHeader>
-        <CCardBody>
-          <CRow>
-            <CCol col="12" sm="12" md="4" xl="4">
-              <CSelect
-                label="Status"
-                :options="statusOptions"
-                :value.sync="task.status"
-                placeholder="Please select"
-                name="select_status"
-                @focus="resetError"
-              />
-              <CSelect
-                :disabled="task.status == backlog"
-                label="Sprint"
-                :options="filteredSprints"
-                :value.sync="task.sprint_id"
-                placeholder="Please Sprint"
-                name="sprint_id"
-              />
 
-              <CSelect
-                label="Reporter User"
-                :options="options"
-                :value.sync="task.reporter_user_id"
-                placeholder="Please select"
-                name="reporter_user_id"
-                readonly
-              />
-              <CSelect
-                label="Assinee User"
-                @focus="resetError"
-                :options="options"
-                :value.sync="task.assignee_user_id"
-                placeholder="Please select"
-                name="assignee_user_id"
-              />
-            </CCol>
-            <CCol col="12" sm="12" md="8" xl="8">
-              <h5>
-                Branch Name :
-                <CBadge color="secondary" shape="pill">{{
-                  task.branch_name
-                }}</CBadge>
-              </h5>
-
-              <div class="mb-2">Task Description</div>
-              <vue-editor
-                v-model="task.description"
-                :editorToolbar="customToolbar"
-                required
-              ></vue-editor>
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol col="6">
-              <CInput
-                placeholder="Enter Start Date"
-                label="Start Date"
-                autocomplete="Start Date"
-                aria-label="Start Date"
-                name="start_date"
-                @focus="resetError"
-                type="date"
-                v-model="task.start_date"
-              >
-              </CInput>
-            </CCol>
-            <CCol col="6">
-              <CInput
-                placeholder="Enter End Date"
-                label="End Date"
-                autocomplete="End Date"
-                aria-label="End Date"
-                name="end_date"
-                @focus="resetError"
-                type="date"
-                :disabled="userCantEdit"
-                v-model="task.end_date"
-              >
-              </CInput>
-            </CCol>
-          </CRow>
-        </CCardBody>
-      </CForm>
-      <CCardFooter>
-        <CRow>
-          <CCol col="12" class="text-right">
-            <CButton
-              color="danger"
-              class="px-4 btn-sm"
-              type="button"
-              :disabled="loading"
-              @click="deleteTask"
-            >
-              <CSpinner v-if="loading" color="light" size="sm" />
-              Delete Task</CButton
-            >
           </CCol>
         </CRow>
-      </CCardFooter>
+        <TaskComment class="pt-4" :task="task"></TaskComment>
+
+      </CCardBody>
+
     </CCard>
-    <TaskComment :taskId="task.id"></TaskComment>
+    <CCard v-else>
+      <CCardBody class="d-flex justify-content-center align-items-center" style="gap:1rem;">
+        No Task Found
+      </CCardBody>
+    </CCard>
+
   </div>
 </template>
 
@@ -149,20 +107,20 @@ import * as Roles from "@/enums/roles";
 import { VueEditor } from "vue2-editor";
 import { mapGetters } from "vuex";
 import { BACKLOG, allTypes } from "../../../enums/taskTypes";
-import TaskComment from "./TaskComment";
+import TaskComment from "../comments/TaskComment";
 export default {
   name: "TaskDetails",
   components: {
     VueEditor,
-    TaskComment,
+    TaskComment
   },
   computed: {
     ...mapGetters({
       loading: "tasks/loading",
-      editTaskError: "tasks/editTaskError",
       users: "users/users",
       user: "users/user",
       sprints: "sprints/sprints",
+      task: "tasks/selectedTask",
     }),
     userCantEdit() {
       if (this.user.roles[0].name === Roles.ADMIN) return false;
@@ -182,7 +140,7 @@ export default {
   },
   data() {
     return {
-      task: JSON.parse(this.$route.query.task),
+
       statusOptions: allTypes,
       backlog: BACKLOG,
       options: [],
@@ -210,12 +168,7 @@ export default {
         });
       }
     },
-    async edit() {
-      let isConfirmed = confirm("Are you sure to edit this ?");
-      if (isConfirmed) {
-        await this.$store.dispatch("tasks/edit", this.task);
-      }
-    },
+    
     async resetError() {
       await this.$store.dispatch("tasks/resetError");
     },
@@ -228,17 +181,23 @@ export default {
           id: this.task.id,
         });
     },
+
+    async resetError(event) {
+      await this.$store.dispatch('taskComments/resetError')
+    },
   },
   async beforeMount() {
+
+    if (this.$route.query.task) {
+      await this.$store.dispatch("tasks/setSelectedTaskBranchName", this.$route.query.task);
+    }
+
     if (Object.entries(this.users).length === 0)
       await this.$store.dispatch("users/fetchAll");
     if (Object.entries(this.sprints).length === 0)
       await this.$store.dispatch("sprints/fetch");
     this.fetchUser();
     await this.$store.dispatch("users/fetchUserDetails");
-  },
-  beforeUnmount() {
-    this.task = {};
   },
 };
 </script>

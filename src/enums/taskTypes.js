@@ -2,24 +2,18 @@ const BACKLOG = 'Backlog'
 const TODO = 'To do'
 const DOING = 'Doing'
 const READYFORREVIEW = 'Ready for review'
-const DEV = 'Dev'
-const TEST = 'Test'
-const STAGING = 'Staging'
-const ARCHIVE = 'Archive'
-const PRODUCTION = 'Production'
+const NEEDFIX = 'Need fix'
+const READYFORTEST = 'Ready for test'
 const FINISHED = 'Finished'
-export const allTypes = [BACKLOG, TODO, DOING, READYFORREVIEW, DEV, TEST, STAGING, ARCHIVE, PRODUCTION, FINISHED]
-export const allKanbanTypes = [TODO, DOING, READYFORREVIEW, DEV, TEST, STAGING, ARCHIVE, PRODUCTION]
+export const allTypes = [BACKLOG, TODO, DOING, READYFORREVIEW, NEEDFIX, READYFORTEST, FINISHED]
+export const allKanbanTypes = [TODO, DOING, READYFORREVIEW, NEEDFIX, READYFORTEST]
 export {
     BACKLOG,
     TODO,
     DOING,
     READYFORREVIEW,
-    DEV,
-    TEST,
-    STAGING,
-    ARCHIVE,
-    PRODUCTION,
+    NEEDFIX,
+    READYFORTEST,
     FINISHED,
 }
 
@@ -28,11 +22,8 @@ export default {
     TODO,
     DOING,
     READYFORREVIEW,
-    DEV,
-    TEST,
-    STAGING,
-    ARCHIVE,
-    PRODUCTION,
+    NEEDFIX,
+    READYFORTEST,
     FINISHED,
     allTypes,
     allKanbanTypes

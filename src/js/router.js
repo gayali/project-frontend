@@ -27,6 +27,8 @@ const Kanban = () => import('@/views/projects/Kanban')
 //Tasks
 const NewTask = () => import('@/views/projects/tasks/NewTask')
 const TaskDetails = () => import('@/views/projects/tasks/TaskDetails')
+const EditTask = () => import('@/views/projects/tasks/EditTask')
+const NewComment = () => import('@/views/projects/comments/NewComment')
 
 const NewSprint = () => import('@/views/projects/sprints/NewSprint')
 const EditSprint = () => import('@/views/projects/sprints/EditSprint')
@@ -156,6 +158,16 @@ function getTasks() {
       name: 'Task Details',
       component: TaskDetails
     },
+    {
+      path: 'editTask',
+      name: 'Edit Task',
+      component: EditTask
+    },
+    {
+      path: 'newComment',
+      name: 'New Comment',
+      component: NewComment
+    }
   ]
 }
 

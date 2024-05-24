@@ -21,9 +21,18 @@
           </CCol>
         </CRow>
       </CCardHeader>
-      <CForm @submit.prevent="$store.dispatch('sprints/submit',{name:name,is_active:0,project_id:project_id})">
+      <CCardBody  v-if="!isAdmin">
+                    <CRow>
+                        <CCol col="12" class="text-center">
+                            <h4 class="mb-0">USER NOT ALLOWED</h4>
+                        </CCol>
+                    </CRow>
+                </CCardBody>
+
+      <CForm v-else @submit.prevent="$store.dispatch('sprints/submit',{name:name,is_active:0,project_id:project_id})">
         <CCardBody>
           <CInput
+            required
             label="Sprint Name"
             autocomplete="Sprint Name"
             aria-label="Sprint Name"
@@ -34,12 +43,12 @@
           </CInput>
 
           <select
-            class="form-control form-control-sm col-sm-9"
+          required
+            class="form-control form-control-sm col-12 "
             placeholder="Select Project"
             @change="project_id = $event.target.value"
             :value="project_id"
           >
-            <option value="">No Project</option>
             <option
               v-for="project in projects"
               :key="project.id"
@@ -86,6 +95,7 @@ export default {
       error: "sprints/newSprintError",
       loading: "sprints/loading",
       projects: "projects/projects",
+      isAdmin: "users/isAdmin",
     }),
   },
   beforeMount() {

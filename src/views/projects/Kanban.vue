@@ -1,7 +1,6 @@
 <template>
-  <div>
-    <div
-      class="
+  <div class="d-flex flex-column align-content-stretch">
+    <div class="
         row
         align-items-center
         justify-content-between
@@ -11,8 +10,7 @@
         pt-2
         bg-white
         rounded
-      "
-    >
+      ">
       <div class="col-sm-12 col-md-6 pr-0">
         <h6 class="mb-0 ml-1">Project : {{ selectedProject.project_name }}</h6>
       </div>
@@ -21,18 +19,10 @@
           <label for="staticEmail" class="col-sm-3 col-form-label">
             Sprint :
           </label>
-          <select
-            class="form-control form-control-sm col-sm-9"
-            placeholder="Select Sprint"
-            @change="selectedSprint = $event.target.value"
-            :value="selectedSprint"
-          >
+          <select class="form-control form-control-sm col-sm-9" placeholder="Select Sprint"
+            @change="selectedSprint = $event.target.value" :value="selectedSprint">
             <option value="">No Sprint</option>
-            <option
-              v-for="sprint in filteredSprints"
-              :key="sprint.id"
-              :value="sprint.id"
-            >
+            <option v-for="sprint in filteredSprints" :key="sprint.id" :value="sprint.id">
               {{ sprint.name }}
             </option>
           </select>
@@ -41,11 +31,7 @@
     </div>
     <div class="kanban-view-class">
       <div class="d-inline-flex">
-        <CCard
-          class="bg-section m-1"
-          v-for="taskType in taskTypes.allKanbanTypes"
-          v-bind:key="taskType"
-        >
+        <CCard class="bg-section m-1" v-for="taskType in taskTypes.allKanbanTypes" v-bind:key="taskType">
           <CCardHeader class="text-center px-0 py-1">
             <h6 class="m-0">
               <strong>{{ taskType }}</strong>
@@ -57,17 +43,12 @@
             </div>
 
             <template v-for="task in filteredTasks">
-              <CCard
-                class="my-2 task-card"
-                v-bind:key="task.id"
-                v-if="task.status === taskType && !taskLoading"
-                @click="
-                  $router.push({
-                    name: 'Task Details',
-                    query: { task: JSON.stringify(task) },
-                  })
-                "
-              >
+              <CCard class="my-2 task-card" v-bind:key="task.id" v-if="task.status === taskType && !taskLoading" @click="
+                $router.push({
+                  name: 'Task Details',
+                  query: { task: task.branch_name },
+                })
+                ">
                 <CCardBody class="p-2">
                   <CRow>
                     <CCol col="4">
@@ -80,29 +61,17 @@
                     <CCol col="12">{{ task.task_title }}</CCol>
                   </CRow>
                   <CRow class="align-items-end">
-                    <CCol
-                      col="10"
-                      v-if="
-                        task.status === taskTypes.TODO ||
-                        task.status === taskTypes.DOING
-                      "
-                    >
+                    <CCol col="9" v-if="task.status === taskTypes.TODO ||
+                      task.status === taskTypes.DOING
+                      ">
                       <CBadge color="tertiary">
-                        <CIcon
-                          name="cilCalendar"
-                          class="icon-bal mr-1"
-                          size="sm"
-                        />
+                        <CIcon name="cilCalendar" class="icon-bal mr-1" size="sm" />
                         Est : {{ moment(task.start_date, task.end_date) }}
                       </CBadge>
                     </CCol>
-                    <CCol col="2" class="text-right">
-                      <avatar
-                        :username="task.asignee_user.name"
-                        :size="30"
-                        style="float: right"
-                        v-c-tooltip.hover="task.asignee_user.name"
-                      >
+                    <CCol col="3" class="text-right">
+                      <avatar :username="task.asignee_user.name" :size="30" style="float: right"
+                        v-c-tooltip.hover="task.asignee_user.name">
                       </avatar>
                     </CCol>
                   </CRow>
@@ -141,10 +110,18 @@ export default {
     },
     filteredTasks() {
       return this.tasks.filter((task) => {
-        return (
-          this.selectedSprint == task.sprint_id &&
-          task.project_id == this.$route.query.id
-        );
+        if (this.selectedSprint) {
+          return (
+            (this.selectedSprint === task.sprint_id) &&
+            task.project_id.toString() === this.$route.query.id
+          );
+        } else {
+          return(
+            (task.sprint_id === null || task.sprint_id === ''|| task.sprint_id === 'null') &&
+            task.project_id.toString() === this.$route.query.id
+          )
+        }
+
       });
     },
   },
@@ -173,11 +150,15 @@ export default {
   },
   methods: {
     moment(startDate, endDate) {
+      
+      console.log('startDate',startDate)
+      console.log('endDate',endDate)
       if (startDate !== null && endDate !== null) {
         let start = moment(startDate, "YYYY-MM-DD");
-        let end = moment(endDate, "YYYY-MM-DD");
+        let end = moment(endDate, "YYYY-MM-DD").add(1, 'days');
 
-        return moment.duration(end.diff(start)).asDays() + 1;
+        let estimate = moment.duration(end.diff(start)).humanize()
+        return estimate;
       } else {
         return "Not Estimated";
       }
@@ -188,8 +169,7 @@ export default {
 <style scoped>
 .kanban-view-class {
   overflow-x: scroll;
-  overflow-y: scroll;
-  height: 79vh;
+  flex: 1;
 }
 
 .bg-section {

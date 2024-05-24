@@ -10,7 +10,11 @@ import {
       loading: false,
       tasksError: '',
       newTaskError: '',
-      editTaskError:''
+      editTaskError:'',
+      selectedTaskBranchName:'',
+      selectedTask:{},
+      selectedTaskError:'',
+      editTask:{}
     },
     getters: {
       tasksError: (state) => state.tasksError,
@@ -18,6 +22,10 @@ import {
       tasks: (state) => state.tasks,
       newTaskError: (state) => state.newTaskError,
       editTaskError: (state) => state.editTaskError,
+      selectedTaskBranchName:(state) => state.selectedTask,
+      selectedTask: (state) => state.selectedTask,
+      selectedTaskError: (state) => state.selectedTaskError,
+      editTask: (state) => state.editTask,
     },
     mutations: {
       SET_TASKS_ERROR(state, error) {
@@ -35,8 +43,44 @@ import {
       SET_EDIT_TASK_ERROR(state, error) {
         state.editTaskError = error
       },
+      SET_SELECTED_TASK_BRANCH_NAME(state, taskBranchName) {
+        state.selectedTaskBranchName = taskBranchName
+      
+      },
+      SET_SELECTED_TASK(state, task) {
+        state.selectedTask ={...task}
+        state.editTask ={...task}
+      },
+      SET_SELECTED_TASK_ERROR(state, task) {
+        state.selectedTaskError = task
+      },
     },
     actions: {
+      async fetchOne({
+        commit,
+        state
+      }) {
+        try {
+          commit('SET_SELECTED_TASK_ERROR', '')
+          commit('SET_LOADING', true)
+          const response = await repository.oneTask(state.selectedTaskBranchName)
+          if (response.status === 200 || response.status === 201) {
+            
+            commit('SET_SELECTED_TASK', response.data.task)
+           
+            console.log('state.selectedTask',state.selectedTask)
+          } else {
+            commit('SET_SELECTED_TASK_ERROR', response.data.message)
+          }
+          commit('SET_LOADING', false)
+        } catch (e) {
+          commit('SET_LOADING', false)
+          console.log(e)
+          console.log(e.response)
+          commit('SET_TASKS_ERROR', e.response.data.message)
+         
+        }
+      },
       async fetch({
         commit,
       }) {
@@ -73,6 +117,17 @@ import {
       }, boolean) {
         commit('SET_LOADING', boolean)
       },
+      setSelectedTaskBranchName({
+        commit,
+        dispatch,
+        state
+      }, taskBranchName) {
+        commit('SET_SELECTED_TASK_BRANCH_NAME', taskBranchName)
+        if(state.selectedTaskBranchName ){
+          dispatch('fetchOne')
+        }
+      },
+      
   
       async submit({
         commit,

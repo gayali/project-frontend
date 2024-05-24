@@ -4,7 +4,7 @@
       <template #toggler>
         <CHeaderNavLink>
           <div class="c-avatar">
-            <avatar :username="avatar" :size="36"></avatar>
+            <Avatar :user="user"></Avatar>
           </div>
         </CHeaderNavLink>
       </template>
@@ -32,22 +32,16 @@
     mapGetters
   } from "vuex"
   import Modal from '../views/components/Modal.vue'
-  import Avatar from 'vue-avatar'
 
   export default {
     name: 'TheHeaderDropdownAccnt',
     components: {
-      Modal,
-      Avatar
+      Modal
     },
     computed: {
       ...mapGetters({
         user: 'users/user',
-      }),
-      avatar() {
-        if (this.user.name) return this.user.name
-        else return ''
-      }
+      })
     },
     data() {
       return {
