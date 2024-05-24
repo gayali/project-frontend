@@ -1,6 +1,7 @@
 import axios from '../repository'
 import auth from '../../js/helpers/auth'
 import qs from 'qs'
+import { errorHandler } from '../error'
 
 export const get = async (url) => {
   auth.refreshHeader()
@@ -41,3 +42,8 @@ export const put = async (url, data) => {
     })
   })
 }
+
+axios.interceptors.response.use(undefined, function (error) {
+  error.handleGlobally = errorHandler(error)
+  return Promise.reject(error)
+})

@@ -1,11 +1,11 @@
 <template>
     <div>
 
-        <CModal :no-close-on-backdrop="noCloseOnBackdrop" :centered="centered" :size="size" :title="title"
-            :color="color" :show.sync="modalVisibility">
+        <CModal :closeOnBackdrop="closeOnBackdrop" :centered="centered" :size="size" :title="title"
+            :color="shouldColored ? color : ''" :show.sync="show">
             <template #header>
                 <h6 class="modal-title">{{title}}</h6>
-                <CButtonClose v-if="crossButton" @click="close" class="text-white" />
+                <CButtonClose v-if="crossButton" @click="close" :class="shouldColored ? 'text-white':''" />
             </template>
 
             <slot>
@@ -25,14 +25,17 @@
 
 
 <script>
-    import {
-        mapGetters
-    } from "vuex"
+
     export default {
         name: 'Modal',
+        data() {
+            return {
+                show: true
+            }
+        },
         props: {
-            noCloseOnBackdrop: {
-                default: true
+            closeOnBackdrop: {
+                default: false
             },
             title: {
                 default: null
@@ -60,20 +63,19 @@
             },
             crossButton: {
                 default: true
+            },
+            shouldColored: {
+                default: true
             }
         },
-        computed: {
-            ...mapGetters({
-                modalVisibility: "components/modalVisibility",
-            }),
-        },
+
         methods: {
             action() {
                 this.$emit('action')
             },
             close() {
-                this.$store.dispatch('components/setModalVisibility', false)
-            }
+                this.$emit('close')
+            },
         },
     }
 </script>

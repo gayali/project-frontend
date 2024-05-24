@@ -11,22 +11,17 @@
       @click="setToggleSidebarDesktop"
     />
     <CHeaderBrand class="mx-auto d-lg-none" to="/">
-      <CIcon name="logo" height="48" alt="Logo"/>
+       <CImg  name="logo"  src="img/logo.png" :height="48" alt="Logo"></CImg>
     </CHeaderBrand>
     <CHeaderNav class="d-md-down-none mr-auto">
       <CHeaderNavItem class="px-3">
-        <CHeaderNavLink to="/dashboard">
-          Dashboard
-        </CHeaderNavLink>
+         <span  class="mr-1">Project Management System</span>
       </CHeaderNavItem>
     </CHeaderNav>
     <CHeaderNav class="mr-4">
-      
       <TheHeaderDropdownAccnt/>
     </CHeaderNav>
-    <CSubheader class="px-3">
-      <CBreadcrumbRouter class="border-0 mb-0"/>
-    </CSubheader>
+   
   </CHeader>
 </template>
 
@@ -39,10 +34,10 @@ export default {
     TheHeaderDropdownAccnt
   },
    methods: {
-      setToggleSidebarMobile(event) {
+      setToggleSidebarMobile() {
        this.$store.dispatch('sidebar/setToggleSidebarMobile')
       },
-      setToggleSidebarDesktop(event) {
+      setToggleSidebarDesktop() {
        this.$store.dispatch('sidebar/setToggleSidebarDesktop')
       },
      

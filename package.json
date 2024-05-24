@@ -1,6 +1,6 @@
 {
   "name": "projectmanagementsystem",
-  "version": "3.1.4",
+  "version": "6.0.0",
   "description": "Self Hosted Project Management System",
   "author": {
     "name": "Project Management",
@@ -32,14 +32,25 @@
     "auto-changelog": "auto-changelog  --hide-credit --commit-limit false --package --backfill-limit 0 --starting-version 3.0.0-beta.0"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "^29.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^29.0.0",
+    "@ckeditor/ckeditor5-essentials": "^29.0.0",
+    "@ckeditor/ckeditor5-link": "^29.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^29.0.0",
+    "@ckeditor/ckeditor5-theme-lark": "^29.0.0",
     "@coreui/coreui": "^3.4.0",
     "@coreui/icons": "^2.0.0-rc.0",
     "@coreui/utils": "^1.3.1",
     "@coreui/vue": "^3.2.9",
     "@coreui/vue-chartjs": "^1.0.6",
     "axios": "^0.21.1",
+    "moment": "^2.29.1",
+    "postcss-loader": "^3.0.0",
+    "raw-loader": "^0.5.1",
     "vue": "~2.6.12",
+    "vue-avatar": "^2.3.3",
     "vue-router": "^3.5.1",
+    "vue2-editor": "^2.10.2",
     "vuex": "~3.6.2"
   },
   "devDependencies": {
@@ -54,11 +65,11 @@
     "babel-eslint": "~10.1.0",
     "babel-jest": "~26.6.3",
     "chromedriver": "latest",
-    "core-js": "^3.9.1",
+    "core-js": "^3.15.2",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.2.2",
     "npm-run-all": "~4.1.5",
-    "sass": "^1.32.8",
+    "sass": "^1.35.2",
     "sass-loader": "^10.1.1",
     "vue-template-compiler": "~2.6.12"
   },

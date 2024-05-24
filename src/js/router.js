@@ -10,99 +10,215 @@ const TheContainer = () => import('@/containers/TheContainer')
 const Dashboard = () => import('@/views/Dashboard')
 
 // Views - Pages
-const Page404 = () => import('@/views/pages/Page404')
-const Page500 = () => import('@/views/pages/Page500')
 const Login = () => import('@/views/pages/Login')
-const Register = () => import('@/views/pages/Register')
 
 // Users
 const Users = () => import('@/views/users/Users')
-const User = () => import('@/views/users/User')
+const NewUser = () => import('@/views/users/NewUser')
 
+//Projects
+const NewProject = () => import('@/views/projects/NewProject')
+const EditProject = () => import('@/views/projects/EditProject')
+const Backlog = () => import('@/views/projects/Backlog')
+const Finished = () => import('@/views/projects/Finished')
+const Details = () => import('@/views/projects/Details')
+const Kanban = () => import('@/views/projects/Kanban')
 
+//Tasks
+const NewTask = () => import('@/views/projects/tasks/NewTask')
+const TaskDetails = () => import('@/views/projects/tasks/TaskDetails')
+const EditTask = () => import('@/views/projects/tasks/EditTask')
+const NewComment = () => import('@/views/projects/comments/NewComment')
 
-const router=new Router({
+const NewSprint = () => import('@/views/projects/sprints/NewSprint')
+const EditSprint = () => import('@/views/projects/sprints/EditSprint')
+
+const router = new Router({
   mode: 'history', // https://router.vuejs.org/api/#mode
   linkActiveClass: 'active',
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: configRoutes()
 })
 
-function configRoutes () {
-  return [
-    {
+function configRoutes() {
+  return [{
       path: '/',
       component: TheContainer,
-      children: [
-        {
+      children: [{
           path: 'dashboard',
           name: 'Dashboard',
           component: Dashboard
         },
         {
           path: 'projects',
-          redirect: '/projects/1',
+          redirect: '/projects/new',
           name: 'Project',
           component: {
-            render (c) { return c('router-view') }
+            render(c) {
+              return c('router-view')
+            }
           },
           children: getProjects()
         },
-      
+        {
+          path: 'tasks',
+          name: 'Task',
+          component: {
+            render(c) {
+              return c('router-view')
+            }
+          },
+          children: getTasks()
+        },
+        {
+          path: 'user',
+          name: 'User',
+          component: {
+            render(c) {
+              return c('router-view')
+            }
+          },
+          children: getUsers()
+        },
+        {
+          path: 'sprint',
+          name: 'Sprint',
+          component: {
+            render(c) {
+              return c('router-view')
+            }
+          },
+          children: getSprints()
+        },
       ]
     },
     {
       path: '/',
       name: 'page',
       component: {
-        render (c) { return c('router-view') }
+        render(c) {
+          return c('router-view')
+        }
       },
-      children: [
-        {
-          path: '/login',
-          name: 'login',
-          component: Login
-        },
-      
-      ]
+      children: [{
+        path: '/login',
+        name: 'login',
+        component: Login
+      }, ]
     },
-   
-   
+
+
   ]
 }
-function getProjects(){
-  return [
-    {
-      path: '404',
-      name: 'Page404',
-      component: Page404
+
+function getProjects() {
+  return [{
+      path: 'new',
+      name: 'New Project',
+      component: NewProject
     },
     {
-      path: '500',
-      name: 'Page500',
-      component: Page500
+      path: 'kanban',
+      name: 'Kanban',
+      component: Kanban
     },
     {
-      path: 'register',
-      name: 'Register',
-      component: Register
+      path: 'backlog',
+      name: 'Backlog',
+      component: Backlog
+    },
+    {
+      path: 'finished',
+      name: 'Finished',
+      component: Finished
+    },
+    {
+      path: 'details',
+      name: 'Project Details',
+      component: Details
+    },
+    {
+      path: 'editProject',
+      name: 'Edit Project',
+      component: EditProject
     }
   ]
 }
 
+function getTasks() {
+  return [{
+      path: 'newTask',
+      name: 'New Task',
+      component: NewTask
+    },
+    {
+      path: 'taskDetails',
+      name: 'Task Details',
+      component: TaskDetails
+    },
+    {
+      path: 'editTask',
+      name: 'Edit Task',
+      component: EditTask
+    },
+    {
+      path: 'newComment',
+      name: 'New Comment',
+      component: NewComment
+    }
+  ]
+}
+
+function getUsers() {
+  return [{
+      path: 'users',
+      name: 'Users',
+      component: Users
+    },
+    {
+      path: 'new',
+      name: 'New User',
+      component: NewUser
+    }
+  ]
+}
+
+function getSprints() {
+  return [{
+      path: 'newSprint',
+      name: 'New Sprint',
+      component: NewSprint
+    },
+    {
+      path: 'editSprint',
+      name: 'Edit Sprint',
+      component: EditSprint
+    }
+  ]
+}
+
+
 router.beforeEach((to, from, next) => {
   if (auth.isAuthenticated()) {
-   if(to.fullPath==="/login" || to.fullPath==="/") {
-    next({ name: 'Dashboard' })
-   }
+    if (to.fullPath === "/login" || to.fullPath === "/") {
+      next({
+        name: 'Dashboard'
+      })
+    }
     store.dispatch('users/fetch')
-  }else if(to.fullPath!=="/login"){
-    next({ name: 'login' })
+  } else if (to.fullPath !== "/login") {
+    next({
+      name: 'login'
+    })
   }
   // If the user is not authenticated, he/she will be redirected to the login page
   if (to.matched.some(m => m.meta.protected) && !auth.isAuthenticated()) {
     auth.clearToken()
-    next({ name: 'login' })
+    next({
+      name: 'login'
+    })
   } else {
     next()
   }
